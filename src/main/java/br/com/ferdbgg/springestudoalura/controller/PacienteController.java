@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ferdbgg.springestudoalura.model.DadosCadastroPaciente;
+import br.com.ferdbgg.springestudoalura.dto.DadosCadastroPaciente;
 
 @RestController
 @RequestMapping("/pacientes")
