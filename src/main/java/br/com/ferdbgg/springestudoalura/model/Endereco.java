@@ -1,11 +1,22 @@
 package br.com.ferdbgg.springestudoalura.model;
 
-public record Endereco(
-        String logradouro,
-        String bairro,
-        String cep,
-        String cidade,
-        String uf,
-        String complemento,
-        String numero) {
+import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Embeddable
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Endereco {
+    private String logradouro;
+    private String bairro;
+    private String cep;
+    private String cidade;
+    private String uf;
+    private String complemento;
+    private String numero;
 }
