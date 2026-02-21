@@ -33,6 +33,8 @@ public class MedicoService {
 
         medico.setEmail(dados.email());
 
+        medico.setTelefone(dados.telefone());
+
         medico.setCrm(dados.crm());
 
         medico.setEspecialidade(dados.especialidade());
@@ -43,27 +45,27 @@ public class MedicoService {
 
     }
 
-    public Endereco parseEndereco(DadosCadastroEndereco dto) {
+    public Endereco parseEndereco(DadosCadastroEndereco dados) {
 
-        if (dto == null) {
+        if (dados == null) {
             return null;
         }
 
         final Endereco endereco = new Endereco();
 
-        endereco.setLogradouro(dto.logradouro());
+        endereco.setLogradouro(dados.logradouro());
 
-        endereco.setBairro(dto.bairro());
+        endereco.setBairro(dados.bairro());
 
-        endereco.setCep(dto.cep());
+        endereco.setCep(dados.cep());
 
-        endereco.setCidade(dto.cidade());
+        endereco.setCidade(dados.cidade());
 
-        endereco.setUf(dto.uf());
+        endereco.setUf(dados.uf());
 
-        endereco.setComplemento(dto.complemento());
+        endereco.setComplemento(dados.complemento());
 
-        endereco.setNumero(dto.numero());
+        endereco.setNumero(dados.numero());
 
         return endereco;
 

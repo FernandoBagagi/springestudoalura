@@ -31,6 +31,8 @@ public class Medico {
 
     private String email;
 
+    private String telefone;
+
     private String crm;
 
     @Enumerated(EnumType.STRING)

@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Pattern;
 public record DadosCadastroMedico(
                 @NotBlank String nome,
                 @NotBlank @Email String email,
+                @NotBlank @Pattern(regexp = "\\d{2} \\d{4,5}-\\d{4}") String telefone,
                 @NotBlank @Pattern(regexp = "CRM\\/[A-Z]{2} \\d{4,6}") String crm,
                 @NotNull EspecialidadeMedico especialidade,
                 @NotNull @Valid DadosCadastroEndereco endereco) {
