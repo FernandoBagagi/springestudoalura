@@ -4,8 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ferdbgg.springestudoalura.dto.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.dto.DadosCadastroEndereco;
-import br.com.ferdbgg.springestudoalura.model.Endereco;
 import br.com.ferdbgg.springestudoalura.model.Medico;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 public class MedicoService {
 
     private final MedicoRepository repository;
+    private final EnderecoService enderecoService;
 
     @Transactional
     public Medico cadastrarNovoMedico(DadosCadastroMedico dados) {
@@ -39,35 +38,9 @@ public class MedicoService {
 
         medico.setEspecialidade(dados.especialidade());
 
-        medico.setEndereco(parseEndereco(dados.endereco()));
+        medico.setEndereco(enderecoService.parseEndereco(dados.endereco()));
 
         return medico;
-
-    }
-
-    public Endereco parseEndereco(DadosCadastroEndereco dados) {
-
-        if (dados == null) {
-            return null;
-        }
-
-        final Endereco endereco = new Endereco();
-
-        endereco.setLogradouro(dados.logradouro());
-
-        endereco.setBairro(dados.bairro());
-
-        endereco.setCep(dados.cep());
-
-        endereco.setCidade(dados.cidade());
-
-        endereco.setUf(dados.uf());
-
-        endereco.setComplemento(dados.complemento());
-
-        endereco.setNumero(dados.numero());
-
-        return endereco;
 
     }
 
