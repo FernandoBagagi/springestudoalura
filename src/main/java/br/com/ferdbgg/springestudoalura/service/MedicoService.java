@@ -1,6 +1,7 @@
 package br.com.ferdbgg.springestudoalura.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ferdbgg.springestudoalura.dto.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.dto.EnderecoDTO;
@@ -15,6 +16,7 @@ public class MedicoService {
 
     private final MedicoRepository repository;
 
+    @Transactional
     public Medico cadastrarNovoMedico(DadosCadastroMedico dados) {
         return repository.save(parseMedico(dados));
     }
