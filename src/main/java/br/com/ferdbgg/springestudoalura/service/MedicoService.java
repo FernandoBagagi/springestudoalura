@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.ferdbgg.springestudoalura.dto.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.dto.EnderecoDTO;
+import br.com.ferdbgg.springestudoalura.dto.DadosCadastroEndereco;
 import br.com.ferdbgg.springestudoalura.model.Endereco;
 import br.com.ferdbgg.springestudoalura.model.Medico;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
@@ -43,7 +43,7 @@ public class MedicoService {
 
     }
 
-    public Endereco parseEndereco(EnderecoDTO dto) {
+    public Endereco parseEndereco(DadosCadastroEndereco dto) {
 
         if (dto == null) {
             return null;

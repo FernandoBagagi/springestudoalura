@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.ferdbgg.springestudoalura.dto.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class MedicoController {
     private final MedicoService service;
     
     @PostMapping
-    public void cadastrar(@RequestBody DadosCadastroMedico dados) {
+    public void cadastrar(@RequestBody @Valid DadosCadastroMedico dados) {
         service.cadastrarNovoMedico(dados);
     }
 }
