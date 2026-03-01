@@ -33,4 +33,47 @@ public class EnderecoService {
 
     }
 
+    public String parseString(Endereco endereco) {
+
+        if (endereco == null) {
+            return null;
+        }
+        
+        final String virgula = ",";
+        final String espaco = " ";
+
+        StringBuilder buffer = new StringBuilder();
+        
+        buffer.append(endereco.getLogradouro());
+        buffer.append(virgula);
+        buffer.append(espaco);
+
+        final String numero = endereco.getNumero();
+        buffer.append(numero == null || numero.isBlank() ? "S/N" : numero);
+        buffer.append(virgula);
+        buffer.append(espaco);
+
+        final String complemento = endereco.getComplemento();
+        if (complemento != null && !complemento.isBlank()) {
+            buffer.append(complemento);
+            buffer.append(virgula);
+            buffer.append(espaco);
+        }
+
+        buffer.append(endereco.getBairro());
+        buffer.append(virgula);
+        buffer.append(espaco);
+
+        buffer.append(endereco.getCidade());
+        buffer.append("-");
+        buffer.append(endereco.getUf());
+        buffer.append(virgula);
+        buffer.append(espaco);
+
+        buffer.append(endereco.getCep());
+
+        return buffer.toString();
+
+    }
+
 }

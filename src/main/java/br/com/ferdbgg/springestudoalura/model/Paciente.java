@@ -31,6 +31,8 @@ public class Paciente {
     
     private String cpf;
 
+    private Boolean ativo;
+
     private String telefone;
 
     @Embedded
