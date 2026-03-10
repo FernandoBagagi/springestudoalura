@@ -11,8 +11,8 @@ import br.com.ferdbgg.springestudoalura.dto.DadosAtualizacao;
 import br.com.ferdbgg.springestudoalura.dto.DadosBasicosPaciente;
 import br.com.ferdbgg.springestudoalura.dto.DadosCadastroPaciente;
 import br.com.ferdbgg.springestudoalura.dto.DadosComplementaresPaciente;
-import br.com.ferdbgg.springestudoalura.model.Endereco;
-import br.com.ferdbgg.springestudoalura.model.Paciente;
+import br.com.ferdbgg.springestudoalura.entities.Endereco;
+import br.com.ferdbgg.springestudoalura.entities.Paciente;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
 

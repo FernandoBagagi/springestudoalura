@@ -1,8 +1,10 @@
 package br.com.ferdbgg.springestudoalura.dto;
 
+import br.com.ferdbgg.springestudoalura.entities.EspecialidadeMedico;
+
 public record DadosBasicosMedico(
         Long id,
         String nome,
         String crm,
-        String especialidade) {
+        EspecialidadeMedico especialidade) {
 }

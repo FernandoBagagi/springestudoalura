@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.ferdbgg.springestudoalura.model.Medico;
+import br.com.ferdbgg.springestudoalura.entities.Medico;
 
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
 
-    Page<Medico> findAllByAtivo(Pageable pageable, boolean isAtivo);
+    <T> Page<T> findByAtivo(Boolean ativo, Class<T> type, Pageable pageable);
 
 }

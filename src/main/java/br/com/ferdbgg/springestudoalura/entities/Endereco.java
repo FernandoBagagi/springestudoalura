@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.model;
+package br.com.ferdbgg.springestudoalura.entities;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

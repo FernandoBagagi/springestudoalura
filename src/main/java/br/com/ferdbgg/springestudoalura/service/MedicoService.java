@@ -11,8 +11,8 @@ import br.com.ferdbgg.springestudoalura.dto.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.dto.DadosAtualizacao;
 import br.com.ferdbgg.springestudoalura.dto.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.dto.DadosComplementaresMedico;
-import br.com.ferdbgg.springestudoalura.model.Endereco;
-import br.com.ferdbgg.springestudoalura.model.Medico;
+import br.com.ferdbgg.springestudoalura.entities.Endereco;
+import br.com.ferdbgg.springestudoalura.entities.Medico;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -24,9 +24,11 @@ public class MedicoService {
     private final EnderecoService enderecoService;
 
     @Transactional
-    public Medico cadastrar(DadosCadastroMedico dados) {
+    public DadosBasicosMedico cadastrar(DadosCadastroMedico dados) {
 
-        return repository.save(parseMedico(dados));
+        final Medico medico = repository.save(parseMedico(dados));
+
+        return parseDadosBasicos(medico);
 
     }
 
@@ -66,15 +68,13 @@ public class MedicoService {
                 medico.getId(),
                 medico.getNome(),
                 medico.getCrm(),
-                medico.getEspecialidade().toString());
+                medico.getEspecialidade());
 
     }
 
     public Page<DadosBasicosMedico> listar(Pageable pageable) {
 
-        return repository
-                .findAllByAtivo(pageable, true)
-                .map(this::parseDadosBasicos);
+        return repository.findByAtivo(true, DadosBasicosMedico.class, pageable);
 
     }
 
@@ -101,7 +101,7 @@ public class MedicoService {
     }
 
     @Transactional
-    public void atualizarCadastro(DadosAtualizacao dados) {
+    public DadosBasicosMedico atualizarCadastro(DadosAtualizacao dados) {
 
         Medico medico = repository.getReferenceById(dados.id());
 
@@ -120,6 +120,8 @@ public class MedicoService {
 
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
+
+        return parseDadosBasicos(medico);
 
     }
 
