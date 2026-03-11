@@ -22,9 +22,9 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class ConfiguracaoDeSeguranca {
 
-    private final FiltroDeSeguranca securityFilter;
+    private final FiltroDeSeguranca filtroDeSeguranca;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -33,7 +33,9 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(this::statelessPolicy)
                 .authorizeHttpRequests(this::authorize)
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        filtroDeSeguranca,
+                        UsernamePasswordAuthenticationFilter.class)
                 .build();
 
     }
@@ -62,11 +64,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration configuration) {
-
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
         return configuration.getAuthenticationManager();
-
     }
 
 }
