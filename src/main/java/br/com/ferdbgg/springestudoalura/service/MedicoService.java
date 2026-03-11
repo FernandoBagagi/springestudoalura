@@ -5,12 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ferdbgg.springestudoalura.domain.entity.Endereco;
+import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPaciente;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
-import br.com.ferdbgg.springestudoalura.entities.Endereco;
-import br.com.ferdbgg.springestudoalura.entities.Medico;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import lombok.RequiredArgsConstructor;
 

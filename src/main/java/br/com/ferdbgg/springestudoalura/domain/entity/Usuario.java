@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.entities;
+package br.com.ferdbgg.springestudoalura.domain.entity;
 
 import java.util.Collection;
 import java.util.List;

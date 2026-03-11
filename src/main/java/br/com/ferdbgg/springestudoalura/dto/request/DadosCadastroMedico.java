@@ -1,6 +1,6 @@
 package br.com.ferdbgg.springestudoalura.dto.request;
 
-import br.com.ferdbgg.springestudoalura.entities.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -1,9 +1,7 @@
-package br.com.ferdbgg.springestudoalura.entities;
+package br.com.ferdbgg.springestudoalura.domain.entity;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,14 +12,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "medicos")
-@Entity(name = "Medico")
+@Table(name = "pacientes")
+@Entity(name = "Paciente")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Medico {
+public class Paciente {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,15 +28,12 @@ public class Medico {
     private String nome;
 
     private String email;
-
-    private String telefone;
-
-    private String crm;
+    
+    private String cpf;
 
     private Boolean ativo;
 
-    @Enumerated(EnumType.STRING)
-    private EspecialidadeMedico especialidade;
+    private String telefone;
 
     @Embedded
     private Endereco endereco;

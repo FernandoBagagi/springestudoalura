@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.ferdbgg.springestudoalura.entities.Usuario;
+import br.com.ferdbgg.springestudoalura.domain.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.repository.UsuarioRepository;
 import br.com.ferdbgg.springestudoalura.service.TokenService;
 import jakarta.servlet.FilterChain;
