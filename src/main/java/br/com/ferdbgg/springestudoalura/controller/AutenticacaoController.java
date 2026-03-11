@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ferdbgg.springestudoalura.dto.DadosAutenticacao;
-import br.com.ferdbgg.springestudoalura.dto.DadosResponseToken;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosAutenticacaoUsuario;
+import br.com.ferdbgg.springestudoalura.dto.response.DadosResponseToken;
 import br.com.ferdbgg.springestudoalura.entities.Usuario;
 import br.com.ferdbgg.springestudoalura.service.TokenService;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class AutenticacaoController {
     private final TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<Object> autenticar(@RequestBody @Valid DadosAutenticacao dados) {
+    public ResponseEntity<Object> autenticar(@RequestBody @Valid DadosAutenticacaoUsuario dados) {
 
         final UsernamePasswordAuthenticationToken authentication //
                 = new UsernamePasswordAuthenticationToken(dados.username(), dados.senha());

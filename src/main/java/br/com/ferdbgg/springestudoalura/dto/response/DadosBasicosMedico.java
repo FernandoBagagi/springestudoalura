@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.dto;
+package br.com.ferdbgg.springestudoalura.dto.response;
 
 import br.com.ferdbgg.springestudoalura.entities.EspecialidadeMedico;
 

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ferdbgg.springestudoalura.dto.DadosAtualizacao;
-import br.com.ferdbgg.springestudoalura.dto.DadosBasicosPaciente;
-import br.com.ferdbgg.springestudoalura.dto.DadosCadastroPaciente;
-import br.com.ferdbgg.springestudoalura.dto.DadosComplementaresPaciente;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPaciente;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroPaciente;
+import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosPaciente;
+import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresPaciente;
 import br.com.ferdbgg.springestudoalura.service.PacienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class PacienteController {
     }
 
     @PutMapping
-    public void atualizarCadastro(@RequestBody @Valid DadosAtualizacao dados) {
+    public void atualizarCadastro(@RequestBody @Valid DadosAtualizacaoMedicoPaciente dados) {
         service.atualizarCadastro(dados);
     }
 

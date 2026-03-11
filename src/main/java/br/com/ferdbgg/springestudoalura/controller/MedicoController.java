@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.ferdbgg.springestudoalura.dto.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.dto.DadosAtualizacao;
-import br.com.ferdbgg.springestudoalura.dto.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.dto.DadosComplementaresMedico;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPaciente;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
+import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
+import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -71,7 +71,7 @@ public class MedicoController {
 
     @PutMapping
     public ResponseEntity<DadosBasicosMedico> atualizarCadastro(
-            @RequestBody @Valid DadosAtualizacao dados) {
+            @RequestBody @Valid DadosAtualizacaoMedicoPaciente dados) {
 
         final DadosBasicosMedico medico = service.atualizarCadastro(dados);
 

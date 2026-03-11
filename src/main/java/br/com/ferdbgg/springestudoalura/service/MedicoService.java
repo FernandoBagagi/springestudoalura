@@ -5,10 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.ferdbgg.springestudoalura.dto.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.dto.DadosAtualizacao;
-import br.com.ferdbgg.springestudoalura.dto.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.dto.DadosComplementaresMedico;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPaciente;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
+import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
+import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
 import br.com.ferdbgg.springestudoalura.entities.Endereco;
 import br.com.ferdbgg.springestudoalura.entities.Medico;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
@@ -92,7 +92,7 @@ public class MedicoService {
     }
 
     @Transactional
-    public DadosBasicosMedico atualizarCadastro(DadosAtualizacao dados) {
+    public DadosBasicosMedico atualizarCadastro(DadosAtualizacaoMedicoPaciente dados) {
 
         Medico medico = repository.getReferenceById(dados.id());
 
