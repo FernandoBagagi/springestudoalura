@@ -1,7 +1,5 @@
 package br.com.ferdbgg.springestudoalura.service;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -83,20 +81,13 @@ public class MedicoService {
         return new DadosComplementaresMedico(
                 medico.getEmail(),
                 medico.getTelefone(),
-                enderecoService
-                        .parseString(medico.getEndereco()));
+                medico.getEndereco());
 
     }
 
     public DadosComplementaresMedico pesquisarPorId(Long id) {
 
-        final Optional<Medico> medico = repository.findById(id);
-
-        if (!medico.isPresent()) {
-            return null;
-        }
-
-        return parseDadosComplementares(medico.get());
+        return repository.findByIdAndAtivo(id, Boolean.TRUE);
 
     }
 
@@ -131,7 +122,7 @@ public class MedicoService {
         // O comando pra deletar definitivamente é repository.deleteById(id)
 
         // Exclusão lógica
-        Medico medico = repository.getReferenceById(id);
+        final Medico medico = repository.getReferenceById(id);
         medico.setAtivo(Boolean.FALSE);
 
     }

@@ -36,9 +36,9 @@ public class MedicoController {
             @RequestBody @Valid DadosCadastroMedico dados,
             UriComponentsBuilder uriBuilder) {
 
-        DadosBasicosMedico medico = service.cadastrar(dados);
+        final DadosBasicosMedico medico = service.cadastrar(dados);
 
-        URI uri = uriBuilder
+        final URI uri = uriBuilder
                 .path("/medicos/{id}")
                 .buildAndExpand(medico.id())
                 .toUri();
@@ -53,7 +53,8 @@ public class MedicoController {
     public ResponseEntity<Page<DadosBasicosMedico>> listar(
             @PageableDefault(sort = { "especialidade", "nome", "id" }) Pageable pageable) {
 
-        Page<DadosBasicosMedico> page = service.listar(pageable);
+        // TODO: Criar página personalizada
+        final Page<DadosBasicosMedico> page = service.listar(pageable);
 
         return ResponseEntity.ok(page);
 
@@ -61,18 +62,18 @@ public class MedicoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DadosComplementaresMedico> pesquisarPorId(@PathVariable Long id) {
-        
-        DadosComplementaresMedico medico = service.pesquisarPorId(id);
-        
+
+        final DadosComplementaresMedico medico = service.pesquisarPorId(id);
+
         return ResponseEntity.ok(medico);
-    
+
     }
 
     @PutMapping
     public ResponseEntity<DadosBasicosMedico> atualizarCadastro(
             @RequestBody @Valid DadosAtualizacao dados) {
 
-        DadosBasicosMedico medico = service.atualizarCadastro(dados);
+        final DadosBasicosMedico medico = service.atualizarCadastro(dados);
 
         return ResponseEntity.ok(medico);
 
