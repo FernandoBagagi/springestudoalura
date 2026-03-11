@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.configuration;
+package br.com.ferdbgg.springestudoalura.exception;
 
 import java.util.List;
 
