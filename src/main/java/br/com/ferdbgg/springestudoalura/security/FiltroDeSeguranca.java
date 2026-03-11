@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.component;
+package br.com.ferdbgg.springestudoalura.security;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class SecurityFilter extends OncePerRequestFilter {
+public class FiltroDeSeguranca extends OncePerRequestFilter {
 
     private static final String PREFIX = "Bearer ";
 

@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import br.com.ferdbgg.springestudoalura.component.SecurityFilter;
+import br.com.ferdbgg.springestudoalura.security.FiltroDeSeguranca;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final SecurityFilter securityFilter;
+    private final FiltroDeSeguranca securityFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
