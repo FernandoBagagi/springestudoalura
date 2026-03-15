@@ -1,16 +1,40 @@
 package br.com.ferdbgg.springestudoalura.repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
+import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
 
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
 
     <T> Page<T> findByAtivo(Boolean ativo, Class<T> type, Pageable pageable);
 
-    DadosComplementaresMedico findByIdAndAtivo(Long id, Boolean ativo);
+    <T> Optional<T> findByIdAndAtivo(Long id, Boolean ativo, Class<T> type);
+
+    @Query("""
+        SELECT m
+        FROM Medico m
+        WHERE m.especialidade = :especialidade
+        AND m.ativo = true
+        AND NOT EXISTS (
+            SELECT c
+            FROM Consulta c
+            WHERE c.medico = m
+            AND c.dia = :dia
+            AND c.hora = :hora
+        )
+        ORDER BY m.id
+        """)
+    Optional<Medico> findFirstMedicoDisponivel(
+            EspecialidadeMedico especialidade,
+            LocalDate dia,
+            LocalTime hora);
 
 }

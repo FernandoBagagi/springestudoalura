@@ -1,10 +1,14 @@
 package br.com.ferdbgg.springestudoalura.domain.entity;
 
-import jakarta.persistence.Embedded;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,34 +16,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "pacientes")
-@Entity(name = "Paciente")
+@Table(name = "consultas")
+@Entity(name = "Consulta")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Paciente {
+public class Consulta {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nome;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_medico", nullable = false)
+    private Medico medico;
 
-    private String email;
-    
-    private String cpf;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_paciente", nullable = false)
+    private Paciente paciente;
 
-    private Boolean ativo;
+    private LocalDate dia;
 
-    private String telefone;
-
-    @Embedded
-    private Endereco endereco;
-
-    public Paciente(Long id) {
-        this.id = id;
-    }
+    private LocalTime hora;
 
 }

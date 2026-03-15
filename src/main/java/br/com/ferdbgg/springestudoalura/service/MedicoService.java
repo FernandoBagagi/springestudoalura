@@ -87,7 +87,9 @@ public class MedicoService {
 
     public DadosComplementaresMedico pesquisarPorId(Long id) {
 
-        return repository.findByIdAndAtivo(id, Boolean.TRUE);
+        return repository
+                .findByIdAndAtivo(id, Boolean.TRUE, DadosComplementaresMedico.class)
+                .orElse(null);
 
     }
 
