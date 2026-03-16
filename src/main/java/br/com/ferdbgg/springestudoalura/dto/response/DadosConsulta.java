@@ -6,6 +6,7 @@ import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 
 public record DadosConsulta(
@@ -16,7 +17,7 @@ public record DadosConsulta(
 
         Long medicoId,
         String medicoNome,
-        String medicoEspecialidade,
+        EspecialidadeMedico medicoEspecialidade,
         String medicoCrm,
 
         Long pacienteId,
@@ -24,7 +25,7 @@ public record DadosConsulta(
 
 ) {
 
-    public OffsetDateTime dataHora() {
+    public OffsetDateTime getDataHora() {
 
         return DataHoraUtil
                 .converterParaOffsetDateTime(dia, hora);

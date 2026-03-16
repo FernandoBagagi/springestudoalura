@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public class DataHoraUtil {
 
@@ -60,7 +61,10 @@ public class DataHoraUtil {
             return null;
         }
 
-        return dateTime.atZone(BRASILIA).toOffsetDateTime();
+        return dateTime
+                .toInstant(ZoneOffset.UTC)
+                .atZone(BRASILIA)
+                .toOffsetDateTime();
 
     }
 
@@ -71,7 +75,7 @@ public class DataHoraUtil {
         }
 
         return converterParaOffsetDateTime(LocalDateTime.of(date, time));
-        
+
     }
 
 }

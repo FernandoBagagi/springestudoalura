@@ -72,9 +72,7 @@ public class ConsultaService {
 
     private Medico procurarMedicoPorId(Long id) {
 
-        return medicoRepository
-                .findByIdAndAtivo(id, Boolean.TRUE, Medico.class)
-                .orElseThrow(AgendamentoConsultaException::new);
+        return medicoRepository.getReferenceById(id);
 
     }
 
@@ -91,7 +89,7 @@ public class ConsultaService {
 
     public Page<DadosConsulta> listar(Pageable pageable) {
 
-        return consultaRepository.findAll(DadosConsulta.class, pageable);
+        return consultaRepository.findAllProjectedBy(DadosConsulta.class, pageable);
 
     }
 

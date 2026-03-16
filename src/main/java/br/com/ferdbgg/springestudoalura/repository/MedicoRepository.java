@@ -19,19 +19,20 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     <T> Optional<T> findByIdAndAtivo(Long id, Boolean ativo, Class<T> type);
 
     @Query("""
-        SELECT m
-        FROM Medico m
-        WHERE m.especialidade = :especialidade
-        AND m.ativo = true
-        AND NOT EXISTS (
-            SELECT c
-            FROM Consulta c
-            WHERE c.medico = m
-            AND c.dia = :dia
-            AND c.hora = :hora
-        )
-        ORDER BY m.id
-        """)
+            SELECT m.id
+            FROM Medico m
+            WHERE m.especialidade = :especialidade
+            AND m.ativo = true
+            AND NOT EXISTS (
+                SELECT c
+                FROM Consulta c
+                WHERE c.medico = m
+                AND c.dia = :dia
+                AND c.hora = :hora
+            )
+            ORDER BY m.id
+            LIMIT 1
+            """)
     Optional<Medico> findFirstMedicoDisponivel(
             EspecialidadeMedico especialidade,
             LocalDate dia,

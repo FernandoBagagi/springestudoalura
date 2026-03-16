@@ -11,7 +11,7 @@ import br.com.ferdbgg.springestudoalura.domain.entity.Consulta;
 
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 
-    <T> Page<T> findAll(Class<T> type, Pageable pageable);
+    <T> Page<T> findAllProjectedBy(Class<T> type, Pageable pageable);
 
     <T> T findById(Long id, Class<T> type);
 

@@ -44,4 +44,8 @@ public class Medico {
     @Embedded
     private Endereco endereco;
 
+    public Medico(Long id) {
+        this.id = id;
+    }
+
 }

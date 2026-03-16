@@ -19,9 +19,9 @@ import br.com.ferdbgg.springestudoalura.service.ConsultaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/consultas")
+@RequiredArgsConstructor
 public class ConsultaController {
 
     private final ConsultaService service;
