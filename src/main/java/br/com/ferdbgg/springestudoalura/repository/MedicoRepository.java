@@ -14,6 +14,9 @@ import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
 
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
 
+    @Query("SELECT m.id FROM Medico m WHERE m.id = :id AND m.ativo = TRUE")
+    Medico getReferenceByIdAndAtivoTrue(Long id);
+
     <T> Page<T> findByAtivo(Boolean ativo, Class<T> type, Pageable pageable);
 
     <T> Optional<T> findByIdAndAtivo(Long id, Boolean ativo, Class<T> type);

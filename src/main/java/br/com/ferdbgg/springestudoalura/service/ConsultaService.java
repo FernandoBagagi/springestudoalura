@@ -2,6 +2,7 @@ package br.com.ferdbgg.springestudoalura.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
 import br.com.ferdbgg.springestudoalura.repository.ConsultaRepository;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
+import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
+import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,20 +28,26 @@ public class ConsultaService {
 
     private final ConsultaRepository consultaRepository;
     private final MedicoRepository medicoRepository;
+    private final PacienteRepository pacienteRepository;
 
     @Transactional
     public Consulta agendar(DadosAgendamentoConsulta dados) {
 
         final Medico medico = procurarMedicoPorDados(dados);
 
-        final LocalDate dia = dados.dataHora().toLocalDate();
-        final LocalTime hora = dados.dataHora().toLocalTime();
+        final LocalDate dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
+        final LocalTime hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
 
         if (jaExisteConsultaMarcadaPara(medico, dia, hora)) {
             throw new AgendamentoConsultaException();
         }
 
-        final Paciente paciente = new Paciente(dados.idPaciente());
+        final Paciente paciente = pacienteRepository
+                .getReferenceByIdAndAtivoTrue(dados.idPaciente());
+
+        if (paciente == null || jaExisteConsultaMarcadaPara(paciente, dia, hora)) {
+            throw new AgendamentoConsultaException();
+        }
 
         final Consulta consulta = new Consulta();
         consulta.setMedico(medico);
@@ -70,9 +79,15 @@ public class ConsultaService {
 
     }
 
+    private boolean jaExisteConsultaMarcadaPara(Paciente paciente, LocalDate dia, LocalTime hora) {
+
+        return consultaRepository.existsByPacienteIdAndDiaAndHora(paciente.getId(), dia, hora);
+
+    }
+
     private Medico procurarMedicoPorId(Long id) {
 
-        return medicoRepository.getReferenceById(id);
+        return medicoRepository.getReferenceByIdAndAtivoTrue(id);
 
     }
 
@@ -102,15 +117,22 @@ public class ConsultaService {
     @Transactional
     public void atualizarAgendamento(DadosAtualizacaoAgendamentoConsulta dados) {
 
-        final Medico medico = procurarMedicoPorId(dados.idMedico());
-        final LocalDate dia = dados.dataHora().toLocalDate();
-        final LocalTime hora = dados.dataHora().toLocalTime();
+        final Consulta consulta = consultaRepository
+                .findById(dados.id())
+                .orElseThrow(AgendamentoConsultaException::new);
+
+        if (!Boolean.TRUE.equals(consulta.getPaciente().getAtivo())) {
+            throw new AgendamentoConsultaException();
+        }
+
+        final Medico medico = getMedicoOuProcurarPorId(consulta.getMedico(), dados.idMedico());
+
+        final LocalDate dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
+        final LocalTime hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
 
         if (jaExisteConsultaMarcadaPara(medico, dia, hora)) {
             throw new AgendamentoConsultaException();
         }
-
-        final Consulta consulta = consultaRepository.getReferenceById(dados.id());
 
         consulta.setMedico(medico);
         consulta.setDia(dia);
@@ -118,6 +140,20 @@ public class ConsultaService {
 
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
+
+    }
+
+    private Medico getMedicoOuProcurarPorId(Medico medico, Long idMedico) {
+
+        if (!Objects.equals(medico.getId(), idMedico)) {
+            return procurarMedicoPorId(idMedico);
+        }
+        
+        if (!Boolean.TRUE.equals(medico.getAtivo())) {
+            throw new AgendamentoConsultaException();
+        }
+
+        return medico;
 
     }
 

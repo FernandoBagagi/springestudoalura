@@ -1,0 +1,1 @@
+ALTER TABLE consultas ADD CONSTRAINT uq_consultas_id_paciente_dia_hora UNIQUE (id_paciente, dia, hora);

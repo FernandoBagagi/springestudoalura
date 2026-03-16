@@ -10,7 +10,9 @@ import java.time.ZoneOffset;
 
 public class DataHoraUtil {
 
-    private static final ZoneId BRASILIA = ZoneId.of("America/Sao_Paulo");
+    public static final ZoneId BRASILIA = ZoneId.of("America/Sao_Paulo");
+
+    public static final ZoneOffset SAO_PAULO_OFFSET = ZoneOffset.ofHours(-3);
 
     private DataHoraUtil() {
     }
@@ -21,7 +23,7 @@ public class DataHoraUtil {
             return null;
         }
 
-        return dateTime.toLocalDate();
+        return dateTime.withOffsetSameInstant(SAO_PAULO_OFFSET).toLocalDate();
 
     }
 
@@ -41,7 +43,7 @@ public class DataHoraUtil {
             return null;
         }
 
-        return dateTime.toLocalTime();
+        return dateTime.withOffsetSameInstant(SAO_PAULO_OFFSET).toLocalTime();
 
     }
 
@@ -61,10 +63,7 @@ public class DataHoraUtil {
             return null;
         }
 
-        return dateTime
-                .toInstant(ZoneOffset.UTC)
-                .atZone(BRASILIA)
-                .toOffsetDateTime();
+        return dateTime.toInstant(ZoneOffset.UTC).atZone(BRASILIA).toOffsetDateTime();
 
     }
 
@@ -74,7 +73,7 @@ public class DataHoraUtil {
             return null;
         }
 
-        return converterParaOffsetDateTime(LocalDateTime.of(date, time));
+        return OffsetDateTime.of(date, time, SAO_PAULO_OFFSET);
 
     }
 
