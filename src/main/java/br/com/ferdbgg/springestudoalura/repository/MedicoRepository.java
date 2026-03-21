@@ -25,7 +25,7 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
             SELECT m.id
             FROM Medico m
             WHERE m.especialidade = :especialidade
-            AND m.ativo = true
+            AND m.ativo = TRUE
             AND NOT EXISTS (
                 SELECT c
                 FROM Consulta c
@@ -33,7 +33,7 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
                 AND c.dia = :dia
                 AND c.hora = :hora
             )
-            ORDER BY m.id
+            ORDER BY RAND()
             LIMIT 1
             """)
     Optional<Medico> findFirstMedicoDisponivel(

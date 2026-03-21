@@ -1,6 +1,7 @@
 package br.com.ferdbgg.springestudoalura.exception;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,41 +24,72 @@ public class TratadorExcecoes {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> campoInvalido(MethodArgumentNotValidException exception) {
+    public ResponseEntity<List<CampoMensagem>> campoInvalido(MethodArgumentNotValidException e) {
 
-        List<CampoMensagem> erros = exception
+        List<CampoMensagem> erros = e
                 .getFieldErrors()
                 .stream()
                 .map(f -> new CampoMensagem(f.getField(), f.getDefaultMessage()))
                 .toList();
 
-        return ResponseEntity.badRequest().body(erros);
+        return ResponseEntity
+                .badRequest()
+                .body(erros);
+
+    }
+
+    @ExceptionHandler(AgendamentoConsultaException.class)
+    public ResponseEntity<Map<String, String>> agendamentoConsultaInvalido(AgendamentoConsultaException e) {
+
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("erro", e.getMessage()));
 
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> tratarErro400(HttpMessageNotReadableException ex) {
-        return ResponseEntity.badRequest().body(ex.getMessage());
+    public ResponseEntity<Map<String, String>> tratarErro400(HttpMessageNotReadableException e) {
+
+        return ResponseEntity
+                .badRequest()
+                .body(Map.of("erro", e.getMessage()));
+
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<String> tratarErroBadCredentials() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciais inválidas");
+    public ResponseEntity<Map<String, String>> tratarErroBadCredentials() {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("erro", "Credenciais inválidas"));
+
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<String> tratarErroAuthentication() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
+    public ResponseEntity<Map<String, String>> tratarErroAuthentication() {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("erro", "Falha na autenticação"));
+
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> tratarErroAcessoNegado() {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Acesso negado");
+    public ResponseEntity<Map<String, String>> tratarErroAcessoNegado() {
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(Map.of("erro", "Acesso negado"));
+
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> tratarErro500(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + ex.getLocalizedMessage());
+    public ResponseEntity<Map<String, String>> tratarErro500(Exception ex) {
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("erro", ex.getLocalizedMessage()));
+
     }
 
 }

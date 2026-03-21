@@ -2,6 +2,7 @@ package br.com.ferdbgg.springestudoalura.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import br.com.ferdbgg.springestudoalura.repository.ConsultaRepository;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
+import br.com.ferdbgg.springestudoalura.validator.consulta.ValidadorAgendamentoConsulta;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,23 +32,35 @@ public class ConsultaService {
     private final MedicoRepository medicoRepository;
     private final PacienteRepository pacienteRepository;
 
+    private final List<ValidadorAgendamentoConsulta> validadoresAgendamento;
+
     @Transactional
     public Consulta agendar(DadosAgendamentoConsulta dados) {
+
+        validadoresAgendamento.forEach(v -> v.validar(dados));
 
         final Medico medico = procurarMedicoPorDados(dados);
 
         final LocalDate dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
         final LocalTime hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
 
+        if (medico == null) {
+            throw AgendamentoConsultaException.medicoNaoEncontrado();
+        }
+        
         if (jaExisteConsultaMarcadaPara(medico, dia, hora)) {
-            throw new AgendamentoConsultaException();
+            throw AgendamentoConsultaException.medicoJaPossuiConsulta();
         }
 
         final Paciente paciente = pacienteRepository
                 .getReferenceByIdAndAtivoTrue(dados.idPaciente());
 
-        if (paciente == null || jaExisteConsultaMarcadaPara(paciente, dia, hora)) {
-            throw new AgendamentoConsultaException();
+        if (paciente == null) {
+            throw AgendamentoConsultaException.pacienteNaoEncontrado();
+        }
+        
+        if (jaExisteConsultaMarcadaPara(paciente, dia, hora)) {
+            throw AgendamentoConsultaException.pacienteJaPossuiConsulta();
         }
 
         final Consulta consulta = new Consulta();
@@ -96,9 +110,9 @@ public class ConsultaService {
         return medicoRepository
                 .findFirstMedicoDisponivel(
                         dados.especialidade(),
-                        dados.dataHora().toLocalDate(),
-                        dados.dataHora().toLocalTime())
-                .orElseThrow(AgendamentoConsultaException::new);
+                        DataHoraUtil.converterParaLocalDate(dados.dataHora()),
+                        DataHoraUtil.converterParaLocalTime(dados.dataHora()))
+                .orElseThrow(AgendamentoConsultaException::medicoNaoDisponivel);
 
     }
 
@@ -119,19 +133,23 @@ public class ConsultaService {
 
         final Consulta consulta = consultaRepository
                 .findById(dados.id())
-                .orElseThrow(AgendamentoConsultaException::new);
+                .orElseThrow(AgendamentoConsultaException::consultaNaoEncontrada);
 
         if (!Boolean.TRUE.equals(consulta.getPaciente().getAtivo())) {
-            throw new AgendamentoConsultaException();
+            throw AgendamentoConsultaException.pacienteNaoEncontrado();
         }
 
         final Medico medico = getMedicoOuProcurarPorId(consulta.getMedico(), dados.idMedico());
+
+        if (medico == null) {
+            throw AgendamentoConsultaException.medicoNaoEncontrado();
+        }
 
         final LocalDate dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
         final LocalTime hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
 
         if (jaExisteConsultaMarcadaPara(medico, dia, hora)) {
-            throw new AgendamentoConsultaException();
+            throw AgendamentoConsultaException.medicoJaPossuiConsulta();
         }
 
         consulta.setMedico(medico);
@@ -148,12 +166,8 @@ public class ConsultaService {
         if (!Objects.equals(medico.getId(), idMedico)) {
             return procurarMedicoPorId(idMedico);
         }
-        
-        if (!Boolean.TRUE.equals(medico.getAtivo())) {
-            throw new AgendamentoConsultaException();
-        }
 
-        return medico;
+        return Boolean.TRUE.equals(medico.getAtivo()) ? medico : null;
 
     }
 

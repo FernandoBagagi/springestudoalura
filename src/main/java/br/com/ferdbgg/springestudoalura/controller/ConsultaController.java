@@ -28,6 +28,7 @@ public class ConsultaController {
 
     @PostMapping
     public void agendar(@RequestBody @Valid DadosAgendamentoConsulta dados) {
+        //TODO: fazer a mesma coisa que o adicionar novo médico
         service.agendar(dados);
     }
 
@@ -51,7 +52,13 @@ public class ConsultaController {
 
     @DeleteMapping("/{id}")
     public void cancelarAgendamentoPorId(@PathVariable Long id) {
+        //TODO: padronizar para devolver response entity
+        //return ResponseEntity.noContent().build()
         service.cancelarAgendamentoPorId(id);
+
+        //TODO: public enum MotivoCancelamento {PACIENTE_DESISTIU,MEDICO_CANCELOU,OUTROS;}
+        //TODO: @Column(name = "motivo_cancelamento") @Enumerated(EnumType.STRING) private MotivoCancelamento motivoCancelamento;
+        //TODO: alter table consultas add column motivo_cancelamento varchar(100);
     }
 
 }
