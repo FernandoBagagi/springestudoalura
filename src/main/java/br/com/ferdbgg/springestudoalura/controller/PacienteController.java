@@ -17,12 +17,14 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroPaciente;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosPaciente;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresPaciente;
 import br.com.ferdbgg.springestudoalura.service.PacienteService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/pacientes")
+@SecurityRequirement(name = "bearer-key")
+@RequiredArgsConstructor
 public class PacienteController {
 
     private final PacienteService service;

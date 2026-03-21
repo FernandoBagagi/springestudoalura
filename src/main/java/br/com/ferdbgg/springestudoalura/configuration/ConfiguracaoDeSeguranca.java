@@ -52,6 +52,8 @@ public class ConfiguracaoDeSeguranca {
     ) {
 
         auth.requestMatchers(HttpMethod.POST, "/autenticacao").permitAll()
+                .requestMatchers( "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                .requestMatchers( "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/medicos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/pacientes").hasRole("ADMIN")
                 .anyRequest().authenticated();

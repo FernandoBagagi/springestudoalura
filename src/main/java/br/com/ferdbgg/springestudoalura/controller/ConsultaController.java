@@ -16,11 +16,13 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.service.ConsultaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/consultas")
+@SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 public class ConsultaController {
 

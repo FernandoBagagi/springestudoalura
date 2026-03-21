@@ -21,12 +21,14 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/medicos")
+@SecurityRequirement(name = "bearer-key")
+@RequiredArgsConstructor
 public class MedicoController {
 
     private final MedicoService service;
