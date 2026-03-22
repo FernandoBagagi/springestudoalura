@@ -1,0 +1,6 @@
+<div th:fragment="inputText(label, name)" class="material-input-group">
+    <input type="text" name="${name}" required>
+    <span class="highlight"></span>
+    <span class="bar"></span>
+    <span class="label" th:text="${label}"></span>
+</div>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Médicos</title>
+
+</head>
+
+<body>
+
+    <table>
+
+        <thead>
+
+            <th>Nome</th>
+
+            <th>CRM</th>
+
+            <th>Especialidade</th>
+
+        </thead>
+
+        <tbody>
+
+            <tr th:each="medico : ${medicos}">
+
+                <td th:text="${medico.nome}"></td>
+
+                <td th:text="${medico.crm}"></td>
+
+                <td th:text="${medico.especialidade}"></td>
+
+            </tr>
+
+        </tbody>
+
+        <tfoot>
+            <td th:if="${pagina.hasPrevious()}">
+                
+                <a th:href="@{/web/medicos(page=${pagina.number - 1})}">
+                    Anterior
+                </a>
+
+            </td>
+
+
+            <td>
+                
+                <span th:text="${pagina.number + 1}"></span>
+            
+            </td>
+
+            <td th:if="${pagina.hasNext()}">
+                
+                <a th:href="@{/web/medicos(page=${pagina.number + 1})}">
+                    Próxima
+                </a>
+            
+            </td>
+
+        </tfoot>
+
+    </table>
+
+</body>
+
+</html>
