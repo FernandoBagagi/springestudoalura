@@ -2,6 +2,7 @@ package br.com.ferdbgg.springestudoalura.repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -20,6 +21,8 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     <T> Page<T> findByAtivo(Boolean ativo, Class<T> type, Pageable pageable);
 
     <T> Optional<T> findByIdAndAtivo(Long id, Boolean ativo, Class<T> type);
+
+    List<Medico> findByEspecialidadeAndAtivoTrue(EspecialidadeMedico especialidade);
 
     @Query("""
             SELECT m.id
