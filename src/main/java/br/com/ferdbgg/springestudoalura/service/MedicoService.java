@@ -11,6 +11,7 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPacien
 import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
+import br.com.ferdbgg.springestudoalura.mapper.MedicoMapper;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -19,69 +20,21 @@ import lombok.RequiredArgsConstructor;
 public class MedicoService {
 
     private final MedicoRepository repository;
+    private final MedicoMapper mapper;
     private final EnderecoService enderecoService;
 
     @Transactional
     public DadosBasicosMedico cadastrar(DadosCadastroMedico dados) {
 
-        final Medico medico = repository.save(parseMedico(dados));
+        final Medico medico = repository.save(mapper.parseMedico(dados));
 
-        return parseDadosBasicos(medico);
-
-    }
-
-    public Medico parseMedico(DadosCadastroMedico dados) {
-
-        if (dados == null) {
-            return null;
-        }
-
-        final Medico medico = new Medico();
-
-        medico.setNome(dados.nome());
-
-        medico.setEmail(dados.email());
-
-        medico.setTelefone(dados.telefone());
-
-        medico.setCrm(dados.crm());
-
-        medico.setAtivo(Boolean.TRUE);
-
-        medico.setEspecialidade(dados.especialidade());
-
-        medico.setEndereco(enderecoService.parseEndereco(dados.endereco()));
-
-        return medico;
-
-    }
-
-    public DadosBasicosMedico parseDadosBasicos(Medico medico) {
-
-        if (medico == null) {
-            return null;
-        }
-
-        return new DadosBasicosMedico(
-                medico.getId(),
-                medico.getNome(),
-                medico.getCrm(),
-                medico.getEspecialidade());
+        return mapper.parseDadosBasicos(medico);
 
     }
 
     public Page<DadosBasicosMedico> listar(Pageable pageable) {
 
         return repository.findByAtivo(true, DadosBasicosMedico.class, pageable);
-
-    }
-
-    public DadosComplementaresMedico parseDadosComplementares(Medico medico) {
-
-        return new DadosComplementaresMedico(
-                medico.getEmail(),
-                medico.getTelefone(),
-                medico.getEndereco());
 
     }
 
@@ -114,7 +67,7 @@ public class MedicoService {
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
 
-        return parseDadosBasicos(medico);
+        return mapper.parseDadosBasicos(medico);
 
     }
 
