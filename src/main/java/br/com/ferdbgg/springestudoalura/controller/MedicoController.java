@@ -2,7 +2,6 @@ package br.com.ferdbgg.springestudoalura.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPacien
 import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
+import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -52,11 +52,10 @@ public class MedicoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DadosBasicosMedico>> listar(
+    public ResponseEntity<Pagina<DadosBasicosMedico>> listar(
             @PageableDefault(sort = { "especialidade", "nome", "id" }) Pageable pageable) {
 
-        // TODO: Criar página personalizada
-        final Page<DadosBasicosMedico> page = service.listar(pageable);
+        final Pagina<DadosBasicosMedico> page = service.listar(pageable);
 
         return ResponseEntity.ok(page);
 

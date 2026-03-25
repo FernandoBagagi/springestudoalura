@@ -11,7 +11,9 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPacien
 import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
+import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.mapper.MedicoMapper;
+import br.com.ferdbgg.springestudoalura.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -32,9 +34,12 @@ public class MedicoService {
 
     }
 
-    public Page<DadosBasicosMedico> listar(Pageable pageable) {
+    public Pagina<DadosBasicosMedico> listar(Pageable pageable) {
 
-        return repository.findByAtivo(true, DadosBasicosMedico.class, pageable);
+        final Page<DadosBasicosMedico> page = repository
+                .findByAtivo(true, DadosBasicosMedico.class, pageable);
+
+        return PaginaMapper.map(page);
 
     }
 
