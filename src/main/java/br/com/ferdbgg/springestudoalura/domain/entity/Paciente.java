@@ -1,5 +1,6 @@
 package br.com.ferdbgg.springestudoalura.domain.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,14 +26,19 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false, unique = true)
     private String email;
     
+    @Column(nullable = false, unique = true)
     private String cpf;
 
+    @Column(nullable = false)
     private Boolean ativo;
 
+    @Column(nullable = false)
     private String telefone;
 
     @Embedded

@@ -1,6 +1,7 @@
 package br.com.ferdbgg.springestudoalura.domain.entity;
 
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -28,16 +29,22 @@ public class Medico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String telefone;
 
+    @Column(nullable = false, unique = true)
     private String crm;
 
+    @Column(nullable = false)
     private Boolean ativo;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EspecialidadeMedico especialidade;
 
