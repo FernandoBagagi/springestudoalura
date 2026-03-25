@@ -17,6 +17,7 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
+import br.com.ferdbgg.springestudoalura.mapper.ConsultaMapper;
 import br.com.ferdbgg.springestudoalura.repository.ConsultaRepository;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
@@ -35,7 +36,7 @@ public class ConsultaService {
     private final List<ValidadorAgendamentoConsulta> validadoresAgendamento;
 
     @Transactional
-    public Consulta agendar(DadosAgendamentoConsulta dados) {
+    public DadosConsulta agendar(DadosAgendamentoConsulta dados) {
 
         validadoresAgendamento.forEach(v -> v.validar(dados));
 
@@ -63,13 +64,15 @@ public class ConsultaService {
             throw AgendamentoConsultaException.pacienteJaPossuiConsulta();
         }
 
-        final Consulta consulta = new Consulta();
+        Consulta consulta = new Consulta();
         consulta.setMedico(medico);
         consulta.setPaciente(paciente);
         consulta.setDia(dia);
         consulta.setHora(hora);
 
-        return consultaRepository.save(consulta);
+        consulta = consultaRepository.save(consulta);
+
+        return ConsultaMapper.parseDadosConsulta(consulta);
 
     }
 
