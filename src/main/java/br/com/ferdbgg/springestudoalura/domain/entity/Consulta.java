@@ -44,7 +44,4 @@ public class Consulta {
     @Column(nullable = false)
     private LocalTime hora;
 
-    @Column(name = "motivo_cancelamento")
-    private String motivoCancelamento;
-
 }

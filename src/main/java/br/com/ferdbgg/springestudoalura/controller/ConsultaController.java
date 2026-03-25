@@ -82,7 +82,6 @@ public class ConsultaController {
 
     }
 
-    // TODO: inativar ao invés de excluir e adicionar o motivo do cancelamento
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> cancelarAgendamentoPorId(@PathVariable Long id) {
         
