@@ -2,7 +2,6 @@ package br.com.ferdbgg.springestudoalura.controller;
 
 import java.net.URI;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
+import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.service.ConsultaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -36,7 +36,7 @@ public class ConsultaController {
     public ResponseEntity<DadosConsulta> agendar(
             @RequestBody @Valid DadosAgendamentoConsulta dados,
             UriComponentsBuilder uriBuilder) {
-        
+
         final DadosConsulta dadosConsulta = service.agendar(dados);
 
         final URI uri = uriBuilder
@@ -47,42 +47,49 @@ public class ConsultaController {
         return ResponseEntity
                 .created(uri)
                 .body(dadosConsulta);
-    
+
     }
 
+    // TODO: ver como transformar isso numa consulta mais completa
     @GetMapping
-    public Page<DadosConsulta> listar(
-            // TODO: ver como transformar isso numa consulta mais completa
-            @PageableDefault(sort = { "id" }) Pageable pageable) {
-        return service.listar(pageable);
+    public ResponseEntity<Pagina<DadosConsulta>> listar(
+            @PageableDefault(sort = { "dia", "hora" }) Pageable pageable) {
+
+        final Pagina<DadosConsulta> pagina = service.listar(pageable);
+
+        return ResponseEntity.ok(pagina);
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DadosConsulta> pesquisarPorId(@PathVariable Long id) {
 
         final DadosConsulta dadosConsulta = service.pesquisarPorId(id);
-        
+
         return ResponseEntity.ok(dadosConsulta);
 
     }
 
     @PutMapping
-    public void atualizarAgendamento(
+    public ResponseEntity<DadosConsulta> atualizarAgendamento(
             @RequestBody @Valid DadosAtualizacaoAgendamentoConsulta dados) {
-        service.atualizarAgendamento(dados);
+
+        final DadosConsulta dadosConsulta = service.atualizarAgendamento(dados);
+
+        return ResponseEntity.ok(dadosConsulta);
+
     }
 
+    // TODO: inativar ao invés de excluir e adicionar o motivo do cancelamento
     @DeleteMapping("/{id}")
-    public void cancelarAgendamentoPorId(@PathVariable Long id) {
-        // TODO: padronizar para devolver response entity
-        // return ResponseEntity.noContent().build()
+    public ResponseEntity<Object> cancelarAgendamentoPorId(@PathVariable Long id) {
+        
         service.cancelarAgendamentoPorId(id);
 
-        // TODO: public enum MotivoCancelamento
-        // {PACIENTE_DESISTIU,MEDICO_CANCELOU,OUTROS;}
-        // TODO: @Column(name = "motivo_cancelamento") @Enumerated(EnumType.STRING)
-        // private MotivoCancelamento motivoCancelamento;
-        // TODO: alter table consultas add column motivo_cancelamento varchar(100);
+        return ResponseEntity
+                .noContent()
+                .build();
+
     }
 
 }

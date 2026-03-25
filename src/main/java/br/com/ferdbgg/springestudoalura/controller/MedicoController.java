@@ -55,9 +55,9 @@ public class MedicoController {
     public ResponseEntity<Pagina<DadosBasicosMedico>> listar(
             @PageableDefault(sort = { "especialidade", "nome", "id" }) Pageable pageable) {
 
-        final Pagina<DadosBasicosMedico> page = service.listar(pageable);
+        final Pagina<DadosBasicosMedico> pagina = service.listar(pageable);
 
-        return ResponseEntity.ok(page);
+        return ResponseEntity.ok(pagina);
 
     }
 

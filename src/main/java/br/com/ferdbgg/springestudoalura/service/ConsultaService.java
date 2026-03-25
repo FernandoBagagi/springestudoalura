@@ -16,8 +16,10 @@ import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
+import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
 import br.com.ferdbgg.springestudoalura.mapper.ConsultaMapper;
+import br.com.ferdbgg.springestudoalura.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.ConsultaRepository;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
@@ -48,7 +50,7 @@ public class ConsultaService {
         if (medico == null) {
             throw AgendamentoConsultaException.medicoNaoEncontrado();
         }
-        
+
         if (jaExisteConsultaMarcadaPara(medico, dia, hora)) {
             throw AgendamentoConsultaException.medicoJaPossuiConsulta();
         }
@@ -59,7 +61,7 @@ public class ConsultaService {
         if (paciente == null) {
             throw AgendamentoConsultaException.pacienteNaoEncontrado();
         }
-        
+
         if (jaExisteConsultaMarcadaPara(paciente, dia, hora)) {
             throw AgendamentoConsultaException.pacienteJaPossuiConsulta();
         }
@@ -119,9 +121,12 @@ public class ConsultaService {
 
     }
 
-    public Page<DadosConsulta> listar(Pageable pageable) {
+    public Pagina<DadosConsulta> listar(Pageable pageable) {
 
-        return consultaRepository.findAllProjectedBy(DadosConsulta.class, pageable);
+        final Page<DadosConsulta> page = consultaRepository
+                .findAllProjectedBy(DadosConsulta.class, pageable);
+
+        return PaginaMapper.map(page);
 
     }
 
@@ -132,7 +137,7 @@ public class ConsultaService {
     }
 
     @Transactional
-    public void atualizarAgendamento(DadosAtualizacaoAgendamentoConsulta dados) {
+    public DadosConsulta atualizarAgendamento(DadosAtualizacaoAgendamentoConsulta dados) {
 
         final Consulta consulta = consultaRepository
                 .findById(dados.id())
@@ -161,6 +166,8 @@ public class ConsultaService {
 
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
+
+        return ConsultaMapper.parseDadosConsulta(consulta);
 
     }
 

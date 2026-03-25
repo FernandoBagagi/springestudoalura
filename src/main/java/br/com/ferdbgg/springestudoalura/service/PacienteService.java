@@ -1,6 +1,5 @@
 package br.com.ferdbgg.springestudoalura.service;
 
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +12,10 @@ import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPacien
 import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroPaciente;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosPaciente;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresPaciente;
+import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
+import br.com.ferdbgg.springestudoalura.mapper.EnderecoMapper;
+import br.com.ferdbgg.springestudoalura.mapper.PacienteMapper;
+import br.com.ferdbgg.springestudoalura.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -21,80 +24,37 @@ import lombok.RequiredArgsConstructor;
 public class PacienteService {
 
     private final PacienteRepository repository;
-    private final EnderecoService enderecoService;
 
     @Transactional
-    public Paciente cadastrar(DadosCadastroPaciente dados) {
+    public DadosBasicosPaciente cadastrar(DadosCadastroPaciente dados) {
 
-        return repository.save(parsePaciente(dados));
-    
-    }
+        Paciente paciente = PacienteMapper.parse(dados);
 
-    public Paciente parsePaciente(DadosCadastroPaciente dados) {
+        paciente = repository.save(paciente);
 
-        if (dados == null) {
-            return null;
-        }
-
-        final Paciente paciente = new Paciente();
-
-        paciente.setNome(dados.nome());
-
-        paciente.setEmail(dados.email());
-
-        paciente.setTelefone(dados.telefone());
-
-        paciente.setCpf(dados.cpf());
-
-        paciente.setAtivo(Boolean.TRUE);
-
-        paciente.setEndereco(enderecoService.parseEndereco(dados.endereco()));
-
-        return paciente;
+        return PacienteMapper.parseDadosBasicos(paciente);
 
     }
 
-    public DadosBasicosPaciente parseDadosBasicos(Paciente paciente) {
+    public Pagina<DadosBasicosPaciente> listar(Pageable pageable) {
 
-        if (paciente == null) {
-            return null;
-        }
+        final Page<DadosBasicosPaciente> page = repository
+                .findByAtivo(Boolean.TRUE, DadosBasicosPaciente.class, pageable);
 
-        return new DadosBasicosPaciente(paciente.getId(), paciente.getNome());
-
-    }
-
-    public Page<DadosBasicosPaciente> listar(Pageable pageable) {
-        return repository
-                .findAll(pageable)
-                .map(this::parseDadosBasicos);
-    }
-
-    public DadosComplementaresPaciente parseDadosComplementares(Paciente paciente) {
-
-        return new DadosComplementaresPaciente(
-                paciente.getEmail(),
-                paciente.getCpf(),
-                paciente.getTelefone(),
-                enderecoService
-                        .parseString(paciente.getEndereco()));
+        return PaginaMapper.map(page);
 
     }
 
     public DadosComplementaresPaciente pesquisarPorId(Long id) {
 
-        final Optional<Paciente> paciente = repository.findById(id);
-
-        if (!paciente.isPresent()) {
-            return null;
-        }
-
-        return parseDadosComplementares(paciente.get());
+        return repository
+                .findByIdAndAtivo(id, Boolean.TRUE, DadosComplementaresPaciente.class)
+                .orElse(null);
 
     }
 
     @Transactional
-    public void atualizarCadastro(DadosAtualizacaoMedicoPaciente dados) {
+    public DadosBasicosPaciente atualizarCadastro(DadosAtualizacaoMedicoPaciente dados) {
 
         Paciente paciente = repository.getReferenceById(dados.id());
 
@@ -106,13 +66,15 @@ public class PacienteService {
             paciente.setTelefone(dados.telefone());
         }
 
-        final Endereco endereco = enderecoService.parseEndereco(dados.endereco());
+        final Endereco endereco = EnderecoMapper.parse(dados.endereco());
         if (endereco != null) {
             paciente.setEndereco(endereco);
         }
 
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
+
+        return PacienteMapper.parseDadosBasicos(paciente);
 
     }
 
@@ -122,7 +84,7 @@ public class PacienteService {
         // O comando pra deletar definitivamente é repository.deleteById(id)
 
         // Exclusão lógica
-        Paciente paciente = repository.getReferenceById(id);
+        final Paciente paciente = repository.getReferenceById(id);
         paciente.setAtivo(Boolean.FALSE);
 
     }
