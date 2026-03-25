@@ -15,6 +15,7 @@ import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
 import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoAgendamentoConsulta;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosFiltroConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
@@ -23,6 +24,7 @@ import br.com.ferdbgg.springestudoalura.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.ConsultaRepository;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
+import br.com.ferdbgg.springestudoalura.repository.specification.ConsultaSpecifications;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 import br.com.ferdbgg.springestudoalura.validator.consulta.ValidadorAgendamentoConsulta;
 import lombok.RequiredArgsConstructor;
@@ -121,10 +123,11 @@ public class ConsultaService {
 
     }
 
-    public Pagina<DadosConsulta> listar(Pageable pageable) {
+    public Pagina<DadosConsulta> listar(DadosFiltroConsulta filtro, Pageable pageable) {
 
         final Page<DadosConsulta> page = consultaRepository
-                .findAllProjectedBy(DadosConsulta.class, pageable);
+                .findAll(ConsultaSpecifications.buildSpecifications(filtro), pageable)
+                .map(ConsultaMapper::parseDadosConsulta);
 
         return PaginaMapper.map(page);
 

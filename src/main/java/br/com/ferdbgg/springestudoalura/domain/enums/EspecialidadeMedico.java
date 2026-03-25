@@ -7,4 +7,18 @@ public enum EspecialidadeMedico {
     GINECOLOGIA,
     DERMATOLOGIA;
 
+    public static EspecialidadeMedico parse(String especialidade) {
+        
+        for (EspecialidadeMedico especialidadeMedico : values()) {
+
+            if (String.valueOf(especialidadeMedico).equalsIgnoreCase(especialidade)) {
+                return especialidadeMedico;
+            }
+            
+        }
+
+        return null;
+
+    }
+
 }

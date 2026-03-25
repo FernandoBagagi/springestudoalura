@@ -7,6 +7,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoAgendamentoConsulta;
+import br.com.ferdbgg.springestudoalura.dto.request.DadosFiltroConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.service.ConsultaService;
@@ -50,12 +52,12 @@ public class ConsultaController {
 
     }
 
-    // TODO: ver como transformar isso numa consulta mais completa
     @GetMapping
     public ResponseEntity<Pagina<DadosConsulta>> listar(
+            @ModelAttribute DadosFiltroConsulta filtro,
             @PageableDefault(sort = { "dia", "hora" }) Pageable pageable) {
 
-        final Pagina<DadosConsulta> pagina = service.listar(pageable);
+        final Pagina<DadosConsulta> pagina = service.listar(filtro, pageable);
 
         return ResponseEntity.ok(pagina);
 
