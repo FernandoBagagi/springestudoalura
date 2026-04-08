@@ -12,7 +12,7 @@ import br.com.ferdbgg.springestudoalura.service.MedicoService;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/web/medicos")
+@RequestMapping("/web/medicos2")
 @RequiredArgsConstructor
 public class MedicoAction {
 
@@ -26,7 +26,7 @@ public class MedicoAction {
         model.addAttribute("medicos", pagina.conteudo());
         model.addAttribute("pagina", pagina);
 
-        return "medicos";
+        return "web/medicos";
 
     }
 

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template.html}">
+<head>
+    <title>Agendamento de Consultas</title>
+</head>
+
+<body>
+    <div layout:fragment="conteudo">
+        <main class="container">
+            <section class="card form-card">
+                <h2 class="title">Agendamento de Consultas</h2>
+
+                <form method="post" action="#" th:action="@{/web/consultas}" th:object="${dados}">
+                    <!-- <input type="hidden" name="id" th:field="*{id}"> -->
+
+                    <div class="form-group">
+                        <label for="especialidade">Especialidade</label>
+                        <select id="especialidade" name="especialidade" required th:field="*{especialidade}">
+                            <option th:value="${null}">Selecione uma especialidade</option>
+                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${dados.especialidade == especialidade}"></option>
+                        </select>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idMedico">Médico</label>
+                        <select id="idMedico" name="idMedico" required th:field="*{idMedico}">
+                            <option th:value="${null}">Selecione um médico</option>
+                            <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}" th:selected="${dados.idMedico == idMedico}"></option>
+                        </select>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('idMedico')}" th:errors="*{idMedico}">Erro!</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idPaciente">ID do Paciente</label>
+                        <input type="text" id="idPaciente" placeholder="Digite o ID do paciente" required th:field="*{idPaciente}">
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('idPaciente')}" th:errors="*{idPaciente}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataHora">Data</label>
+                        <input type="datetime-local" id="dataHora" required th:field="*{dataHora}">
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('dataHora')}" th:errors="*{dataHora}"></div>
+                    </div>
+
+                    <div class="buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar" class="btn-icon">Cadastrar
+                        </button>
+
+                        <a href="listagem-consultas.html" th:href="@{/web/consultas}" class="btn btn-secondary">
+                            <img src="/static/web/assets/back.png" th:src="@{/web/assets/back.png}" alt="Voltar" class="btn-icon">Voltar
+                        </a>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

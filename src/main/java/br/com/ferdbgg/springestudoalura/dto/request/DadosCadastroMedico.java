@@ -13,5 +13,6 @@ public record DadosCadastroMedico(
         @NotBlank(message = "{obrigatorio.telefone}") @Pattern(regexp = "\\d{2} \\d{4,5}-\\d{4}", message = "{formato.invalido.telefone}") String telefone,
         @NotBlank(message = "{obrigatorio.crm}") @Pattern(regexp = "CRM\\/[A-Z]{2} \\d{4,6}", message = "{formato.invalido.crm}") String crm,
         @NotNull(message = "{obrigatorio.especialidade}") EspecialidadeMedico especialidade,
-        @NotNull(message = "{obrigatorio.endereco}") @Valid DadosCadastroEndereco endereco) {
+        //@NotNull(message = "{obrigatorio.endereco}") 
+        @Valid DadosCadastroEndereco endereco) {
 }

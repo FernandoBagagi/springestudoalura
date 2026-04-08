@@ -1,0 +1,16 @@
+<div class="table-footer" xmlns:th="http://thymeleaf.org" th:fragment="paginacao(url, registros)">
+    <div th:if="${registros != null} and ${registros.metadados.totalElementos > 0}">
+        <p class="results">Exibindo <b th:text="${registros.metadados.numeroElementosPorPagina}"></b> de <b th:text="${registros.metadados.totalElementos}"></b> registros</p>
+        <div class="pagination" th:with="anterior=${registros.metadados.numeroPagina > 0} ? ${url} + '?page=' + (${registros.metadados.numeroPagina - 1}) : '', proximo=${registros.metadados.numeroPagina < (registros.metadados.totalPaginas - 1)} ? ${url} + '?page=' + (${registros.metadados.numeroPagina + 1}) : ''">
+            <a th:href="${anterior}" th:classappend="${!(registros.metadados.numeroPagina > 0)} ? ' disabled'" class="btn btn-pagination" th:text="'Anterior'"></a>
+            <span class="page-item" th:each="i: ${#numbers.sequence(1, registros.metadados.totalPaginas)}" th:classappend="${registros.metadados.numeroPagina + 1 == i} ? ' active disabled'">
+                <a th:if="${registros.metadados.numeroPagina + 1 != i}" th:href="${url} + '?page=' + (${i - 1})" class="page-link" th:text="${i}"></a>
+                <span th:if="${registros.metadados.numeroPagina + 1 == i}" class="current-page" th:text="${i}"></span>
+            </span>
+            <a th:href="${proximo}" th:classappend="${!(registros.metadados.numeroPagina < (registros.metadados.totalPaginas - 1))} ? 'disabled'" class="btn btn-pagination" th:text="'Próximo'"></a>
+        </div>
+    </div>
+    <div th:if="${registros == null} or ${registros.metadados.totalElementos == 0}">
+        <div class="hint-text">Nenhum registro encontrado.</div>
+    </div>
+</div>

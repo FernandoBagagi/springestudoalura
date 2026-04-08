@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt"
+      xmlns:th="http://thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Voll.med</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../static/web/assets/logo.png" th:href="@{/web/assets/logo.png}">
+    <link rel="stylesheet" href="../static/web/css/estilos.css" th:href="@{/web/css/estilos.css}">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div th:replace="~{componentes/_menu.html :: menu}"></div>
+
+        <div class="container">
+            <div th:replace="~{componentes/_mensagens.html :: mensagens}" th:remove="tag"></div>
+        </div>
+
+        <div layout:fragment="conteudo">
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-logo">
+                        <img src="../static/web/assets/logo.png" alt="Médico com máscara" th:src="@{assets/logo.png}"> Voll
+                    </h1>
+
+                    <h2 class="hero-title">Encontre profissionais de <span>diversas especialidades</span></h2>
+                    <p class="hero-subtitle">e agende sua consulta com facilidade</p>
+                </div>
+
+                <div class="hero-image">
+                    <img src="../static/web/assets/medico.png" alt="Médico com máscara" th:src="@{assets/medico.png}">
+                    <img src="../static/web/assets/medica.png" alt="Médica com estetoscópio" th:src="@{assets/medica.png}">
+                </div>
+            </div>
+        </section>
+    </div>
+
+        <div class="footer" id="rodape" th:replace="~{componentes/_footer.html :: footer}"></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../web/static/js/script.js" th:src="@{/web/js/script.js}"></script>
+</body>
+</html>
+

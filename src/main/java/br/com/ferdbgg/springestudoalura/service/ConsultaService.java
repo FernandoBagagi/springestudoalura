@@ -139,6 +139,20 @@ public class ConsultaService {
 
     }
 
+    public DadosAgendamentoConsulta pesquisarDadosAgendamentoConsultaPorId(Long id) {
+
+        final Consulta consulta = consultaRepository.findById(id, Consulta.class);
+
+        return new DadosAgendamentoConsulta(
+                consulta.getMedico().getId(),
+                consulta.getMedico().getEspecialidade(),
+                consulta.getPaciente().getId(),
+                DataHoraUtil.converterParaOffsetDateTime(
+                        consulta.getDia(),
+                        consulta.getHora()));
+
+    }
+
     @Transactional
     public DadosConsulta atualizarAgendamento(DadosAtualizacaoAgendamentoConsulta dados) {
 

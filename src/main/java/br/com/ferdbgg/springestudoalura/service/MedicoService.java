@@ -51,6 +51,14 @@ public class MedicoService {
 
     }
 
+    public Medico pesquisarMedicoPorId(Long id) {
+
+        return repository
+                .findByIdAndAtivo(id, Boolean.TRUE, Medico.class)
+                .orElse(null);
+
+    }
+
     @Transactional
     public DadosBasicosMedico atualizarCadastro(DadosAtualizacaoMedicoPaciente dados) {
 

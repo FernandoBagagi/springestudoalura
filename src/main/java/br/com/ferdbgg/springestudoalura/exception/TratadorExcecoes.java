@@ -2,6 +2,7 @@ package br.com.ferdbgg.springestudoalura.exception;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,11 @@ public class TratadorExcecoes {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> entidadeNaoEncotrada() {
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Object> tratarErro404() {
         return ResponseEntity.notFound().build();
     }
 
@@ -85,6 +91,8 @@ public class TratadorExcecoes {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> tratarErro500(Exception ex) {
+
+        ex.printStackTrace();
 
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
