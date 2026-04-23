@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,6 +38,8 @@ public class ConfiguracaoDeSeguranca {
                 .addFilterBefore(
                         filtroDeSeguranca,
                         UsernamePasswordAuthenticationFilter.class)
+                .formLogin(this::formLogin)
+                .logout(this::logout)
                 .build();
 
     }
@@ -47,14 +51,27 @@ public class ConfiguracaoDeSeguranca {
 
     }
 
+    private void formLogin(FormLoginConfigurer<HttpSecurity> configurer) {
+        configurer
+                .loginPage("/web/login")
+                .defaultSuccessUrl("/web/")
+                .permitAll();
+    }
+
+    private void logout(LogoutConfigurer<HttpSecurity> configurer) {
+        configurer
+                .logoutSuccessUrl("/web/login?logout")
+                .permitAll();
+    }
+
     private void authorize(
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth //
     ) {
 
         auth.requestMatchers(HttpMethod.POST, "/autenticacao").permitAll()
-                .requestMatchers( "/swagger-ui.html", "/swagger-ui/**").permitAll()
-                .requestMatchers( "/v3/api-docs/**").permitAll()
-                .requestMatchers( "/web/**").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/web/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/medicos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/pacientes").hasRole("ADMIN")
                 .anyRequest().authenticated();
