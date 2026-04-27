@@ -11,12 +11,14 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import br.com.ferdbgg.springestudoalura.security.FiltroDeSeguranca;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class ConfiguracaoDeSeguranca {
                         UsernamePasswordAuthenticationFilter.class)
                 .formLogin(this::formLogin)
                 .logout(this::logout)
+                .rememberMe(this::rememberMe)
                 .build();
 
     }
@@ -60,8 +63,17 @@ public class ConfiguracaoDeSeguranca {
 
     private void logout(LogoutConfigurer<HttpSecurity> configurer) {
         configurer
+                .logoutUrl("/web/login/logout")
+                .addLogoutHandler(new SecurityContextLogoutHandler())
                 .logoutSuccessUrl("/web/login?logout")
                 .permitAll();
+    }
+
+    private void rememberMe(RememberMeConfigurer<HttpSecurity> configurer) {
+        configurer
+                .key("chaveParaRecupararSessaoDeLoginAtravesDeCookies")
+                //.tokenValiditySeconds(0)
+                .alwaysRemember(true);
     }
 
     private void authorize(
