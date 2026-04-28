@@ -7,8 +7,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
@@ -34,7 +34,7 @@ public class ConfiguracaoDeSeguranca {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
 
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(this::csrf)
                 .sessionManagement(this::statelessPolicy)
                 .authorizeHttpRequests(this::authorize)
                 .addFilterBefore(
@@ -45,6 +45,10 @@ public class ConfiguracaoDeSeguranca {
                 .rememberMe(this::rememberMe)
                 .build();
 
+    }
+
+    private void csrf(CsrfConfigurer<HttpSecurity> configurer) {
+        // Deixa o default
     }
 
     private SessionManagementConfigurer<HttpSecurity> statelessPolicy(
@@ -72,8 +76,7 @@ public class ConfiguracaoDeSeguranca {
     private void rememberMe(RememberMeConfigurer<HttpSecurity> configurer) {
         configurer
                 .key("chaveParaRecupararSessaoDeLoginAtravesDeCookies")
-                //.tokenValiditySeconds(0)
-                .alwaysRemember(true);
+                .tokenValiditySeconds(5 * 60);
     }
 
     private void authorize(
