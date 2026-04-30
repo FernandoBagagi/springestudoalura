@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RememberMeConfigurer;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +55,9 @@ public class ConfiguracaoDeSeguranca {
     private SessionManagementConfigurer<HttpSecurity> statelessPolicy(
             SessionManagementConfigurer<HttpSecurity> configurer) {
 
-        return configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        return configurer;
+        // Pro curso de segurança foi necessário tirar a política STATELESS
+        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
     }
 
@@ -89,7 +90,7 @@ public class ConfiguracaoDeSeguranca {
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/web/**").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/medicos").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/medicos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/pacientes").hasRole("ADMIN")
                 .anyRequest().authenticated();
 
