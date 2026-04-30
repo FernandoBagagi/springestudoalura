@@ -89,8 +89,9 @@ public class ConfiguracaoDeSeguranca {
         auth.requestMatchers(HttpMethod.POST, "/autenticacao").permitAll()
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
-                .requestMatchers("/web/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE, "/medicos").hasRole("ADMIN")
+                .requestMatchers("/web/assets/**","/web/css/**","/web/js/**").permitAll()
+                .requestMatchers("/web/", "/web/index", "/web/home").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/medicos").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/pacientes").hasRole("ADMIN")
                 .anyRequest().authenticated();
 
