@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.controller;
+package br.com.ferdbgg.springestudoalura.controller.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

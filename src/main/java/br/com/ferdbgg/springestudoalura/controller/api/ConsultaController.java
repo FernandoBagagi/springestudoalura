@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.controller;
+package br.com.ferdbgg.springestudoalura.controller.api;
 
 import java.net.URI;
 
