@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/consultas")
 @SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
-public class ConsultaController {
+public class ConsultaRestController {
 
     private final ConsultaService service;
 

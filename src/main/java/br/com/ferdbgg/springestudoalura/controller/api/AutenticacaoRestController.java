@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/autenticacao")
 @RequiredArgsConstructor
-public class AutenticacaoController {
+public class AutenticacaoRestController {
 
     private final AuthenticationManager manager;
     private final TokenService tokenService;

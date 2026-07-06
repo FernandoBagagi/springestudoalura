@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/medicos")
 @SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
-public class MedicoController {
+public class MedicoRestController {
 
     private final MedicoService service;
 
