@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.mapper;
+package br.com.ferdbgg.springestudoalura.domain.mapper;
 
 import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.domain.entity.Consulta;

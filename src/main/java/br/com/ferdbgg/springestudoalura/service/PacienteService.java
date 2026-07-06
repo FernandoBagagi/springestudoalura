@@ -13,9 +13,9 @@ import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresP
 import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.domain.entity.Endereco;
 import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
-import br.com.ferdbgg.springestudoalura.mapper.EnderecoMapper;
-import br.com.ferdbgg.springestudoalura.mapper.PacienteMapper;
-import br.com.ferdbgg.springestudoalura.mapper.PaginaMapper;
+import br.com.ferdbgg.springestudoalura.domain.mapper.EnderecoMapper;
+import br.com.ferdbgg.springestudoalura.domain.mapper.PacienteMapper;
+import br.com.ferdbgg.springestudoalura.domain.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
 import lombok.RequiredArgsConstructor;
 

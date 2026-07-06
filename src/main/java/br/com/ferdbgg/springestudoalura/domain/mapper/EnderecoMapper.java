@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.mapper;
+package br.com.ferdbgg.springestudoalura.domain.mapper;
 
 import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroEndereco;
 import br.com.ferdbgg.springestudoalura.domain.entity.Endereco;

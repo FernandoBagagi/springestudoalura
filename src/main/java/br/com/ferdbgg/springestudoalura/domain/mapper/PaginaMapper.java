@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.mapper;
+package br.com.ferdbgg.springestudoalura.domain.mapper;
 
 import org.springframework.data.domain.Page;
 
