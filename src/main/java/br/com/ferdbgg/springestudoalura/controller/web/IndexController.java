@@ -5,17 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/web/login")
-public class LoginAction {
+@RequestMapping({"/web/", "/web/home", "/web/index"})
+public class IndexController {
 
     @GetMapping
-    public String telaLogin() {
-        return "autenticacao/login";
-    }
-
-    @GetMapping("/logout")
-    public String carregaPaginaLogout() {
-        return "autenticacao/logout";
+    public String carregarPaginaIndex() {
+        return "index";
     }
 
 }

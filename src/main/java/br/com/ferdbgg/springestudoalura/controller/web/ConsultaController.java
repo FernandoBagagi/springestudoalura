@@ -23,7 +23,7 @@ import br.com.ferdbgg.springestudoalura.service.MedicoService;
 
 @Controller
 @RequestMapping("/web/consultas")
-public class ConsultaAction {
+public class ConsultaController {
 
     private static final String DADOS = "dados";
     private static final String PAGINA_LISTAGEM = "consulta/listagem-consultas";
@@ -33,7 +33,7 @@ public class ConsultaAction {
     private final ConsultaService service;
     private final MedicoService medicoService;
 
-    public ConsultaAction(ConsultaService consultaService, MedicoService medicoService) {
+    public ConsultaController(ConsultaService consultaService, MedicoService medicoService) {
         this.service = consultaService;
         this.medicoService = medicoService;
     }

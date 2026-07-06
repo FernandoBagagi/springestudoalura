@@ -19,7 +19,7 @@ import br.com.ferdbgg.springestudoalura.service.MedicoService;
 
 @Controller
 @RequestMapping("/web/medicos")
-public class MedicoAction2 {
+public class MedicoController {
 
     private static final String PAGINA_LISTAGEM = "medico/listagem-medicos";
     private static final String PAGINA_CADASTRO = "medico/formulario-medico";
@@ -27,7 +27,7 @@ public class MedicoAction2 {
 
     private final MedicoService service;
 
-    public MedicoAction2(MedicoService service) {
+    public MedicoController(MedicoService service) {
         this.service = service;
     }
 
