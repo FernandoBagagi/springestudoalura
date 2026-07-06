@@ -2,6 +2,7 @@ package br.com.ferdbgg.springestudoalura.controller.web;
 
 import jakarta.validation.Valid;
 
+import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.dto.request.DadosFiltroConsulta;
@@ -61,7 +61,7 @@ public class ConsultaAction {
     public String carregarPaginaAgendaConsulta(Long id, Model model) {
 
         final DadosAgendamentoConsulta dados = id == null
-                ? new DadosAgendamentoConsulta(null, null, 0L, OffsetDateTime.now())
+                ? new DadosAgendamentoConsulta(null, null, 0L, OffsetDateTime.now(Clock.systemDefaultZone()))
                 : service.pesquisarDadosAgendamentoConsultaPorId(id);
 
         model.addAttribute(DADOS, dados);
