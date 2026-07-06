@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.configuration;
+package br.com.ferdbgg.springestudoalura.configuration.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-import br.com.ferdbgg.springestudoalura.security.FiltroDeSeguranca;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

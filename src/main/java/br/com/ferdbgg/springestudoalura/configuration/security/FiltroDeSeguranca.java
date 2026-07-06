@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.security;
+package br.com.ferdbgg.springestudoalura.configuration.security;
 
 import java.io.IOException;
 
