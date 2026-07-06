@@ -5,9 +5,9 @@ import java.time.LocalTime;
 
 import org.springframework.data.jpa.domain.Specification;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosFiltroConsulta;
 import br.com.ferdbgg.springestudoalura.domain.entity.Consulta;
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosFiltroConsulta;
 
 public final class ConsultaSpecifications {
 

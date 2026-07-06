@@ -18,10 +18,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroEndereco;
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroMedico;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroEndereco;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.mapper.MedicoMapper;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 

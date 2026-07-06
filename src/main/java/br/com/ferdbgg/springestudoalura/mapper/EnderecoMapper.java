@@ -1,7 +1,7 @@
 package br.com.ferdbgg.springestudoalura.mapper;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroEndereco;
 import br.com.ferdbgg.springestudoalura.domain.entity.Endereco;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroEndereco;
 
 public class EnderecoMapper {
     

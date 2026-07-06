@@ -2,8 +2,8 @@ package br.com.ferdbgg.springestudoalura.mapper;
 
 import org.springframework.data.domain.Page;
 
-import br.com.ferdbgg.springestudoalura.dto.response.MetadadosPagina;
-import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.MetadadosPagina;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
 
 public class PaginaMapper {
     

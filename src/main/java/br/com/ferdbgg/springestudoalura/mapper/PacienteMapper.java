@@ -1,9 +1,9 @@
 package br.com.ferdbgg.springestudoalura.mapper;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresPaciente;
 import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresPaciente;
 
 public class PacienteMapper {
     

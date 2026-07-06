@@ -6,8 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 import lombok.RequiredArgsConstructor;
 

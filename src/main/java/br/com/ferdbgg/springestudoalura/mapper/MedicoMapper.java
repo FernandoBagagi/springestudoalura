@@ -2,10 +2,10 @@ package br.com.ferdbgg.springestudoalura.mapper;
 
 import org.springframework.stereotype.Component;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroMedico;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresMedico;
 import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresMedico;
 import br.com.ferdbgg.springestudoalura.service.EnderecoService;
 import lombok.RequiredArgsConstructor;
 

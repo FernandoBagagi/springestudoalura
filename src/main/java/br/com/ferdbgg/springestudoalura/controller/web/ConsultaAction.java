@@ -13,10 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAgendamentoConsulta;
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosFiltroConsulta;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosFiltroConsulta;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
 import br.com.ferdbgg.springestudoalura.service.ConsultaService;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;

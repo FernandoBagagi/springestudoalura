@@ -2,8 +2,8 @@ package br.com.ferdbgg.springestudoalura.service.impl;
 
 import org.springframework.stereotype.Service;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroEndereco;
 import br.com.ferdbgg.springestudoalura.domain.entity.Endereco;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroEndereco;
 import br.com.ferdbgg.springestudoalura.service.EnderecoService;
 
 @Service

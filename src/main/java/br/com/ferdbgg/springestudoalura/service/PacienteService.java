@@ -6,13 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAtualizacaoMedicoPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.domain.entity.Endereco;
 import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPaciente;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.mapper.EnderecoMapper;
 import br.com.ferdbgg.springestudoalura.mapper.PacienteMapper;
 import br.com.ferdbgg.springestudoalura.mapper.PaginaMapper;

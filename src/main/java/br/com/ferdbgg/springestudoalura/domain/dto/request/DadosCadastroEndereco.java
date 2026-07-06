@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.dto.request;
+package br.com.ferdbgg.springestudoalura.domain.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

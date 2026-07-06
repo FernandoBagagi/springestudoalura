@@ -8,12 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroEndereco;
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroMedico;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroEndereco;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 

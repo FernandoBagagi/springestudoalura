@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.dto.response;
+package br.com.ferdbgg.springestudoalura.domain.dto.response;
 
 public record DadosBasicosPaciente(
         Long id,

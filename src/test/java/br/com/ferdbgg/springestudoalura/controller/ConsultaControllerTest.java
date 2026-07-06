@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.service.ConsultaService;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 

@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.ferdbgg.springestudoalura.dto.request.DadosAtualizacaoMedicoPaciente;
-import br.com.ferdbgg.springestudoalura.dto.request.DadosCadastroPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosBasicosPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosComplementaresPaciente;
-import br.com.ferdbgg.springestudoalura.dto.response.Pagina;
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAtualizacaoMedicoPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresPaciente;
+import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.service.PacienteService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

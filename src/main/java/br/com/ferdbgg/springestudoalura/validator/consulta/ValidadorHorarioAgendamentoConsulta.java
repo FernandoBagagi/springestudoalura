@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 
 import org.springframework.stereotype.Component;
 
-import br.com.ferdbgg.springestudoalura.dto.request.DadosAgendamentoConsulta;
+import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAgendamentoConsulta;
 import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 

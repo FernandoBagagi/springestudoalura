@@ -1,7 +1,7 @@
 package br.com.ferdbgg.springestudoalura.mapper;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.domain.entity.Consulta;
-import br.com.ferdbgg.springestudoalura.dto.response.DadosConsulta;
 
 public class ConsultaMapper {
 
