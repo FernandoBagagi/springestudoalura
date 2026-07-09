@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.ferdbgg.springestudoalura.domain.dto.form.CadastroPacienteForm;
 import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAtualizacaoMedicoPaciente;
 import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroPaciente;
 import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosPaciente;
@@ -49,6 +50,14 @@ public class PacienteService {
 
         return repository
                 .findByIdAndAtivo(id, Boolean.TRUE, DadosComplementaresPaciente.class)
+                .orElse(null);
+
+    }
+
+    public CadastroPacienteForm pesquisarDadosFormPorId(Long id) {
+
+        return repository
+                .findByIdAndAtivo(id, Boolean.TRUE, CadastroPacienteForm.class)
                 .orElse(null);
 
     }

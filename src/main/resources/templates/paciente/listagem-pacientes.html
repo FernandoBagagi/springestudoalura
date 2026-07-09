@@ -3,20 +3,20 @@
     layout:decorate="~{template.html}">
 
 <head>
-    <title>Listagem de Médicos</title>
+    <title>Listagem de Pacientes</title>
 </head>
 
 <body>
     <div layout:fragment="conteudo">
         <main class="container">
             <section class="card">
-                <h2 class="title">Listagem de médicos</h2>
+                <h2 class="title">Listagem de pacientes</h2>
 
                 <div class="table-controls">
-                    <a href="formulario-medico.html" th:href="@{/web/medicos/formulario}" class="btn btn-tertiary">
+                    <a href="formulario-paciente.html" th:href="@{/web/pacientes/formulario}" class="btn btn-tertiary">
                         <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar"
                             class="btn-icon">
-                        Novo Médico
+                        Novo Paciente
                     </a>
                 </div>
 
@@ -24,34 +24,36 @@
                     <thead>
                         <tr>
                             <th>Nome</th>
-                            <th>CRM</th>
-                            <th>Especialidade</th>
+                            <!-- <th>Email</th> -->
+                            <!-- <th>Telefone</th> -->
+                            <!-- <th>CPF</th> -->
                             <th>Ações</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr th:each="medico: ${medicos.conteudo}">
-                            <td th:text="${medico.nome}"></td>
-                            <td th:text="${medico.crm}"></td>
-                            <td th:text="${medico.especialidade}"></td>
+                        <tr th:each="paciente: ${pacientes.conteudo}">
+                            <td th:text="${paciente.nome}"></td>
+                            <!-- <td th:text="${paciente.email}"></td> -->
+                            <!-- <td th:text="${paciente.telefone}"></td> -->
+                            <!-- <td th:text="${paciente.cpf}"></td> -->
                             <td>
                                 <a href="#" class="btn btn-edit"
-                                    th:href="@{/web/medicos/formulario?id={id}(id=${medico.id})}" title="Editar">
+                                    th:href="@{/web/pacientes/formulario?id={id}(id=${paciente.id})}" title="Editar">
                                     <img src="/static/web/assets/edit.svg" th:src="@{/web/assets/edit.svg}" alt="Editar">
                                 </a>
 
                                 <a href="#deleteModal" class="btn btn-delete" data-toggle="modal"
-                                    th:data-id="${medico.id}" data-url="/web/medicos" title="Excluir">
-                                    <img src="/static/web/assets/delete.svg" th:src="@{/web/assets/delete.svg}"
-                                        alt="Excluir">
+                                    th:data-id="${paciente.id}" data-url="/web/pacientes" title="Excluir">
+                                    <img src="/static/web/assets/delete.svg" th:src="@{/web/assets/delete.svg}" alt="Excluir">
                                 </a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div th:replace="~{componentes/_paginacao.html :: paginacao(url = 'medicos', registros = ${medicos})}">
+                <div
+                    th:replace="~{componentes/_paginacao.html :: paginacao(url = 'pacientes', registros = ${pacientes})}">
                 </div>
             </section>
         </main>

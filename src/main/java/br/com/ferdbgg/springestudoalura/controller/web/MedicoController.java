@@ -14,13 +14,13 @@ import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
 import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
 import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
-import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 
 @Controller
 @RequestMapping("/web/medicos")
 public class MedicoController {
 
+    private static final String DADOS = "dados";
     private static final String PAGINA_LISTAGEM = "medico/listagem-medicos";
     private static final String PAGINA_CADASTRO = "medico/formulario-medico";
     private static final String REDIRECT_LISTAGEM = "redirect:/web/medicos?sucesso";
@@ -37,7 +37,10 @@ public class MedicoController {
     }
 
     @GetMapping
-    public String carregarPaginaListagem(@PageableDefault Pageable paginacao, Model model) {
+    public String carregarPaginaListagem( //
+            @PageableDefault Pageable paginacao, //
+            Model model //
+    ) {
         var medicosCadastrados = service.listar(paginacao);
         model.addAttribute("medicos", medicosCadastrados);
         return PAGINA_LISTAGEM;
@@ -47,17 +50,28 @@ public class MedicoController {
     public String carregarPaginaCadastro(Long id, Model model) {
 
         final Medico dados = id == null
-                ? new Medico(null, null, null, null, null, null, null, null)
+                ? new Medico(
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null)
                 : service.pesquisarMedicoPorId(id);
 
-        model.addAttribute("dados", dados);
+        model.addAttribute(DADOS, dados);
 
         return PAGINA_CADASTRO;
     }
 
     @PostMapping
-    public String cadastrar(@Valid @ModelAttribute("dados") DadosCadastroMedico dados, BindingResult result,
-            Model model) {
+    public String cadastrar( //
+            @Valid @ModelAttribute(DADOS) DadosCadastroMedico dados, //
+            BindingResult result, //
+            Model model //
+    ) {
 
         final DadosCadastroMedico novosDados = new DadosCadastroMedico(
                 dados.nome(),
@@ -75,16 +89,16 @@ public class MedicoController {
                         "1578"));
 
         if (result.hasErrors()) {
-            model.addAttribute("dados", novosDados);
+            model.addAttribute(DADOS, novosDados);
             return PAGINA_CADASTRO;
         }
 
         try {
             service.cadastrar(novosDados);
             return REDIRECT_LISTAGEM;
-        } catch (AgendamentoConsultaException e) {
+        } catch (RuntimeException e) {
             model.addAttribute("erro", e.getMessage());
-            model.addAttribute("dados", novosDados);
+            model.addAttribute(DADOS, novosDados);
             return PAGINA_CADASTRO;
         }
     }
@@ -97,9 +111,10 @@ public class MedicoController {
 
     @GetMapping("{especialidade}")
     @ResponseBody
-    public Pagina<DadosBasicosMedico> listarMedicosPorEspecialidade(@PageableDefault Pageable paginacao,
-            @PathVariable String especialidade) {
-        // return service.listarPorEspecialidade(Especialidade.valueOf(especialidade));
+    public Pagina<DadosBasicosMedico> listarMedicosPorEspecialidade( //
+            @PageableDefault Pageable paginacao, //
+            @PathVariable String especialidade //
+    ) {
         return service.listar(paginacao);
     }
 
