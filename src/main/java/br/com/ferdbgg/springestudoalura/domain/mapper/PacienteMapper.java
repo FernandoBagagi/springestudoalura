@@ -1,17 +1,22 @@
 package br.com.ferdbgg.springestudoalura.domain.mapper;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
 import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroPaciente;
 import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosPaciente;
 import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresPaciente;
 import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
+import br.com.ferdbgg.springestudoalura.domain.entity.Usuario;
+import lombok.RequiredArgsConstructor;
 
+@Component
+@RequiredArgsConstructor
 public class PacienteMapper {
-    
-    private PacienteMapper() {
 
-    }
+    private final PasswordEncoder encriptador;
 
-    public static Paciente parse(DadosCadastroPaciente dados) {
+    public Paciente parse(DadosCadastroPaciente dados) {
 
         if (dados == null) {
             return null;
@@ -35,7 +40,7 @@ public class PacienteMapper {
 
     }
 
-    public static DadosBasicosPaciente parseDadosBasicos(Paciente paciente) {
+    public DadosBasicosPaciente parseDadosBasicos(Paciente paciente) {
 
         if (paciente == null) {
             return null;
@@ -45,13 +50,28 @@ public class PacienteMapper {
 
     }
 
-    public static DadosComplementaresPaciente parseDadosComplementares(Paciente paciente) {
+    public DadosComplementaresPaciente parseDadosComplementares(Paciente paciente) {
 
         return new DadosComplementaresPaciente(
                 paciente.getEmail(),
                 paciente.getCpf(),
                 paciente.getTelefone(),
                 EnderecoMapper.toString(paciente.getEndereco()));
+
+    }
+
+    public Usuario parseUsuario(DadosCadastroPaciente dados) {
+
+        if (dados == null) {
+            return null;
+        }
+
+        final var usuario = new Usuario();
+        usuario.setLogin(dados.email());
+        final var senha = encriptador.encode(dados.cpf());
+        usuario.setSenha(senha);
+
+        return usuario;
 
     }
 

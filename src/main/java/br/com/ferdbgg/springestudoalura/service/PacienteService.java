@@ -18,6 +18,7 @@ import br.com.ferdbgg.springestudoalura.domain.mapper.EnderecoMapper;
 import br.com.ferdbgg.springestudoalura.domain.mapper.PacienteMapper;
 import br.com.ferdbgg.springestudoalura.domain.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
+import br.com.ferdbgg.springestudoalura.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,15 +26,20 @@ import lombok.RequiredArgsConstructor;
 public class PacienteService {
 
     private final PacienteRepository repository;
+    private final UsuarioRepository usuarioRepository;
+    private final PacienteMapper mapper;
 
     @Transactional
     public DadosBasicosPaciente cadastrar(DadosCadastroPaciente dados) {
 
-        Paciente paciente = PacienteMapper.parse(dados);
+        var usuario = mapper.parseUsuario(dados);
+        usuario = usuarioRepository.save(usuario);
 
+        var paciente = mapper.parse(dados);
+        paciente.setId(usuario.getId());
         paciente = repository.save(paciente);
 
-        return PacienteMapper.parseDadosBasicos(paciente);
+        return mapper.parseDadosBasicos(paciente);
 
     }
 
@@ -83,7 +89,7 @@ public class PacienteService {
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
 
-        return PacienteMapper.parseDadosBasicos(paciente);
+        return mapper.parseDadosBasicos(paciente);
 
     }
 
