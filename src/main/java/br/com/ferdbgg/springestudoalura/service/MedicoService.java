@@ -15,6 +15,7 @@ import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
 import br.com.ferdbgg.springestudoalura.domain.mapper.MedicoMapper;
 import br.com.ferdbgg.springestudoalura.domain.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
+import br.com.ferdbgg.springestudoalura.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,11 +25,17 @@ public class MedicoService {
     private final MedicoRepository repository;
     private final MedicoMapper mapper;
     private final EnderecoService enderecoService;
+    private final UsuarioRepository usuarioRepository;
 
     @Transactional
     public DadosBasicosMedico cadastrar(DadosCadastroMedico dados) {
 
-        final Medico medico = repository.save(mapper.parseMedico(dados));
+        var usuario = mapper.parseUsuario(dados);
+        usuario = usuarioRepository.save(usuario);
+        
+        var medico = mapper.parseMedico(dados);
+        medico.setId(usuario.getId());
+        medico = repository.save(medico);
 
         return mapper.parseDadosBasicos(medico);
 

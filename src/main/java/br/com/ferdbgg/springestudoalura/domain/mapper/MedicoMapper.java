@@ -1,11 +1,13 @@
 package br.com.ferdbgg.springestudoalura.domain.mapper;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroMedico;
 import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresMedico;
 import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
+import br.com.ferdbgg.springestudoalura.domain.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.service.EnderecoService;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class MedicoMapper {
 
     private final EnderecoService enderecoService;
+    private final PasswordEncoder encriptador;
 
     public Medico parseMedico(DadosCadastroMedico dados) {
 
@@ -63,5 +66,20 @@ public class MedicoMapper {
                 medico.getEndereco());
 
     }
-    
+
+    public Usuario parseUsuario(DadosCadastroMedico dados) {
+
+        if (dados == null) {
+            return null;
+        }
+
+        final var usuario = new Usuario();
+        usuario.setLogin(dados.email());
+        final var senha = encriptador.encode(dados.crm());
+        usuario.setSenha(senha);
+
+        return usuario;
+
+    }
+
 }
