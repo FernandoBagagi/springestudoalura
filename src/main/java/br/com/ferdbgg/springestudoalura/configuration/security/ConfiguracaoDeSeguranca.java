@@ -1,5 +1,6 @@
 package br.com.ferdbgg.springestudoalura.configuration.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
+import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -30,7 +32,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConfiguracaoDeSeguranca {
 
+    private static final int TOKEN_VALIDITY_SECONDS = 5 * 60;
+
+    @Value("${springestudoalura.configuration.security.key-remember-me}")
+    private String keyRememberMe;
+
     private final FiltroDeSeguranca filtroDeSeguranca;
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService, //
+            PasswordEncoder passwordEncoder //
+    ) {
+
+        final var provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return new ProviderManager(provider);
+
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
@@ -39,9 +64,7 @@ public class ConfiguracaoDeSeguranca {
                 .csrf(this::csrf)
                 .sessionManagement(this::statelessPolicy)
                 .authorizeHttpRequests(this::authorize)
-                .addFilterBefore(
-                        filtroDeSeguranca,
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filtroDeSeguranca, beforeFilter())
                 .formLogin(this::formLogin)
                 .logout(this::logout)
                 .rememberMe(this::rememberMe)
@@ -54,33 +77,12 @@ public class ConfiguracaoDeSeguranca {
     }
 
     private SessionManagementConfigurer<HttpSecurity> statelessPolicy(
-            SessionManagementConfigurer<HttpSecurity> configurer) {
+            SessionManagementConfigurer<HttpSecurity> configurer //
+    ) {
 
-        return configurer;
         // Pro curso de segurança foi necessário tirar a política STATELESS
-        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        return configurer; // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-    }
-
-    private void formLogin(FormLoginConfigurer<HttpSecurity> configurer) {
-        configurer
-                .loginPage("/web/login")
-                .defaultSuccessUrl("/web/")
-                .permitAll();
-    }
-
-    private void logout(LogoutConfigurer<HttpSecurity> configurer) {
-        configurer
-                .logoutUrl("/web/login/logout")
-                .addLogoutHandler(new SecurityContextLogoutHandler())
-                .logoutSuccessUrl("/web/login?logout")
-                .permitAll();
-    }
-
-    private void rememberMe(RememberMeConfigurer<HttpSecurity> configurer) {
-        configurer
-                .key("chaveParaRecupararSessaoDeLoginAtravesDeCookies")
-                .tokenValiditySeconds(5 * 60);
     }
 
     private void authorize(
@@ -92,26 +94,41 @@ public class ConfiguracaoDeSeguranca {
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/web/assets/**", "/web/css/**", "/web/js/**").permitAll()
                 .requestMatchers("/web/", "/web/index", "/web/home").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/medicos").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/pacientes").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/medicos").hasAuthority("ATENDENTE")
+                .requestMatchers(HttpMethod.DELETE, "/pacientes").hasAuthority("ATENDENTE")
                 .anyRequest().authenticated();
 
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    private Class<? extends Filter> beforeFilter() {
+        return UsernamePasswordAuthenticationFilter.class;
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    private void formLogin(FormLoginConfigurer<HttpSecurity> configurer) {
 
-        final DaoAuthenticationProvider authenticationProvider = //
-                new DaoAuthenticationProvider(userDetailsService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        configurer
+                .loginPage("/web/login")
+                .defaultSuccessUrl("/web/")
+                .permitAll();
 
-        return new ProviderManager(authenticationProvider);
+    }
+
+    private void logout(LogoutConfigurer<HttpSecurity> configurer) {
+
+        configurer
+                .logoutUrl("/web/login/logout")
+                .addLogoutHandler(new SecurityContextLogoutHandler())
+                .logoutSuccessUrl("/web/login?logout")
+                .permitAll();
+
+    }
+
+    private void rememberMe(RememberMeConfigurer<HttpSecurity> configurer) {
+
+        configurer
+                .key(keyRememberMe)
+                .tokenValiditySeconds(TOKEN_VALIDITY_SECONDS);
+
     }
 
 }
