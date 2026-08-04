@@ -16,6 +16,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Para criar um filtro, basta implementar a interface
+ * {@code jakarta.servlet.Filter} e sobrescrever o método {@code doFilter()},
+ * responsável por interceptar e processar cada requisição antes que ela chegue
+ * ao destino.
+ *
+ * Neste caso, foi utilizada a classe {@code OncePerRequestFilter}, que garante
+ * que o filtro seja executado apenas uma vez para cada requisição HTTP,
+ * evitando múltiplas execuções durante o mesmo ciclo de processamento da
+ * requisição.
+ */
 @Component
 @RequiredArgsConstructor
 public class FiltroDeSeguranca extends OncePerRequestFilter {
@@ -25,52 +36,48 @@ public class FiltroDeSeguranca extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final UsuarioRepository usuarioRepository;
 
-    /**
-     * Para criar um filtro usa implements jakarta.servlet.Filter
-     * e @Override doFilter
-     */
-
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
+            HttpServletRequest request, //
+            HttpServletResponse response, //
             FilterChain filterChain //
     ) throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
+        final var authorizationHeader = request.getHeader("Authorization");
         autenticarUsuario(authorizationHeader);
-        
+
         // Necessário pra continuar o fluxo de filtros
         filterChain.doFilter(request, response);
-        
+
     }
-    
-    private void autenticarUsuario(final String authorizationHeader) {
-        
+
+    private void autenticarUsuario(String authorizationHeader) {
+
         if (isAuthorizationHeaderInvalido(authorizationHeader)) {
             return;
         }
 
-        final String token = authorizationHeader.strip().replaceFirst(PREFIX, "");
+        final var token = authorizationHeader.strip().replaceFirst(PREFIX, "");
 
-        final Long idUsuario = tokenService.validarToken(token);
+        final var idUsuario = tokenService.validarToken(token);
 
         usuarioRepository
                 .findById(idUsuario)
                 .ifPresent(this::registrarAutenticacao);
 
     }
-    
+
     private boolean isAuthorizationHeaderInvalido(String authorizationHeader) {
+
         return authorizationHeader == null
-        || authorizationHeader.isBlank()
-        || !authorizationHeader.startsWith(PREFIX);
+                || authorizationHeader.isBlank()
+                || !authorizationHeader.startsWith(PREFIX);
+
     }
 
     private void registrarAutenticacao(Usuario usuario) {
 
-        final UsernamePasswordAuthenticationToken authentication //
-                = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+        final var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
