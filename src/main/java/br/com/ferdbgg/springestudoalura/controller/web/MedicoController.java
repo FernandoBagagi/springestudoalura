@@ -1,8 +1,11 @@
 package br.com.ferdbgg.springestudoalura.controller.web;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +21,7 @@ import br.com.ferdbgg.springestudoalura.service.MedicoService;
 
 @Controller
 @RequestMapping("/web/medicos")
+@RequiredArgsConstructor
 public class MedicoController {
 
     private static final String DADOS = "dados";
@@ -26,10 +30,6 @@ public class MedicoController {
     private static final String REDIRECT_LISTAGEM = "redirect:/web/medicos?sucesso";
 
     private final MedicoService service;
-
-    public MedicoController(MedicoService service) {
-        this.service = service;
-    }
 
     @ModelAttribute("especialidades")
     public EspecialidadeMedico[] especialidades() {
@@ -47,6 +47,7 @@ public class MedicoController {
     }
 
     @GetMapping("formulario")
+    @PreAuthorize("hasAuthority('ATENDENTE') OR hasAuthority('MEDICO')")
     public String carregarPaginaCadastro(Long id, Model model) {
 
         final Medico dados = id == null
@@ -67,6 +68,7 @@ public class MedicoController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ATENDENTE')")
     public String cadastrar( //
             @Valid @ModelAttribute(DADOS) DadosCadastroMedico dados, //
             BindingResult result, //
@@ -104,6 +106,7 @@ public class MedicoController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAuthority('ATENDENTE')")
     public String excluir(Long id) {
         service.inativarPorId(id);
         return REDIRECT_LISTAGEM;

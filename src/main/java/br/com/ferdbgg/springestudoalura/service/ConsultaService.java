@@ -39,6 +39,11 @@ public class ConsultaService {
 
     private final List<ValidadorAgendamentoConsulta> validadoresAgendamento;
 
+    public DadosFiltroConsulta buildFiltrofromIDs(Long medicoId, Long pacienteId) {
+        return new DadosFiltroConsulta(null, null, null, null, null, null, null, medicoId, null, null, null, pacienteId,
+                null);
+    }
+
     @Transactional
     public DadosConsulta agendar(DadosAgendamentoConsulta dados) {
 

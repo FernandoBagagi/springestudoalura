@@ -1,8 +1,11 @@
 package br.com.ferdbgg.springestudoalura.controller.web;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +23,8 @@ import br.com.ferdbgg.springestudoalura.service.PacienteService;
 
 @Controller
 @RequestMapping("/web/pacientes")
+@RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ATENDENTE')")
 public class PacienteController {
 
     private static final String DADOS = "dados";
@@ -28,10 +33,6 @@ public class PacienteController {
     private static final String REDIRECT_LISTAGEM = "redirect:/web/pacientes?sucesso";
 
     private final PacienteService service;
-
-    public PacienteController(PacienteService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public String carregarPaginaListagem( //

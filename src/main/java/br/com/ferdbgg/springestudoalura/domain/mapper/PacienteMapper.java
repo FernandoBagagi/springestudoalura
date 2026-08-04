@@ -8,6 +8,7 @@ import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosPaciente
 import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresPaciente;
 import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
 import br.com.ferdbgg.springestudoalura.domain.entity.Usuario;
+import static br.com.ferdbgg.springestudoalura.domain.enums.PerfilUsuario.PACIENTE;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -70,6 +71,7 @@ public class PacienteMapper {
         usuario.setLogin(dados.email());
         final var senha = encriptador.encode(dados.cpf());
         usuario.setSenha(senha);
+        usuario.setPerfil(PACIENTE);
 
         return usuario;
 

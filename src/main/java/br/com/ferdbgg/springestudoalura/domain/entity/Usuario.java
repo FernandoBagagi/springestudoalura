@@ -1,15 +1,18 @@
 package br.com.ferdbgg.springestudoalura.domain.entity;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import br.com.ferdbgg.springestudoalura.domain.enums.PerfilUsuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,11 +42,17 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String senha;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PerfilUsuario perfil;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(
-                new SimpleGrantedAuthority("ADMIN"),
-                new SimpleGrantedAuthority("USER"));
+
+        final var stringPerfil = String.valueOf(perfil);
+        final var authority = new SimpleGrantedAuthority(stringPerfil);
+        return Collections.singletonList(authority);
+
     }
 
     @Override
@@ -54,6 +63,18 @@ public class Usuario implements UserDetails {
     @Override
     public String getUsername() {
         return login;
+    }
+
+    public boolean isMedico() {
+        return PerfilUsuario.MEDICO.equals(perfil);
+    }
+
+    public boolean isPaciente() {
+        return PerfilUsuario.PACIENTE.equals(perfil);
+    }
+
+    public boolean isAtendente() {
+        return PerfilUsuario.ATENDENTE.equals(perfil);
     }
 
 }
