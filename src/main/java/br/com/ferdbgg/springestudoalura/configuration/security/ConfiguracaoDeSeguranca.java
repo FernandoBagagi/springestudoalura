@@ -73,7 +73,7 @@ public class ConfiguracaoDeSeguranca {
     }
 
     private void csrf(CsrfConfigurer<HttpSecurity> configurer) {
-        // Deixa o default
+        configurer.disable(); //Desabilita o CSRF pra conseguir usar a API
     }
 
     private SessionManagementConfigurer<HttpSecurity> statelessPolicy(
@@ -89,7 +89,7 @@ public class ConfiguracaoDeSeguranca {
             AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry auth //
     ) {
 
-        auth.requestMatchers(HttpMethod.POST, "/autenticacao").permitAll()
+        auth.requestMatchers(HttpMethod.POST, "/api/autenticacao").permitAll()
                 .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/web/assets/**", "/web/css/**", "/web/js/**").permitAll()
