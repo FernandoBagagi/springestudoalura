@@ -7,12 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosResponseToken;
 import br.com.ferdbgg.springestudoalura.domain.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.exception.TokenException;
 
@@ -26,25 +21,26 @@ public class TokenService {
     @Value("${springestudoalura.token.jwt.secret-key}")
     private String secret;
 
-    public DadosResponseToken tentarGerarToken(Usuario usuario) throws TokenException {
+    private Algorithm getAlgoritmo() {
+        return Algorithm.HMAC256(secret);
+    }
 
-        final Instant agora = Instant.now();
+    public String tentarGerarToken(Usuario usuario) throws TokenException {
+
+        final var agora = Instant.now();
+        final var validade = agora.plusSeconds(SEGUNDOS_VALIDADE_TOKEN);
         
         try {
             
-            final Algorithm algorithm = Algorithm.HMAC256(secret);
-
-            final String token = JWT.create()
+            return JWT.create()
                     .withClaim(CLAIM_ID, usuario.getId())
                     .withSubject(usuario.getLogin())
                     .withIssuedAt(agora)
-                    .withExpiresAt(agora.plusSeconds(SEGUNDOS_VALIDADE_TOKEN))
+                    .withExpiresAt(validade)
                     .withIssuer(ISSUER)
-                    .sign(algorithm);
+                    .sign(getAlgoritmo());
 
-            return new DadosResponseToken(token);
-
-        } catch (JWTCreationException e) {
+        } catch (Exception e) {
 
             throw TokenException.erroGeracao(e);
 
@@ -56,19 +52,17 @@ public class TokenService {
         
         try {
             
-            final Algorithm algorithm = Algorithm.HMAC256(secret);
-            
-            JWTVerifier verifier = JWT.require(algorithm)
+            final var verificador = JWT.require(getAlgoritmo())
                     .withIssuer(ISSUER)
                     .build();
 
-            final DecodedJWT decodedJWT = verifier.verify(token);
+            final var jwtDecodificado = verificador.verify(token);
             
-            return decodedJWT.getClaim(CLAIM_ID).asLong();
+            return jwtDecodificado.getClaim(CLAIM_ID).asLong();
         
-        } catch (JWTVerificationException e) {
+        } catch (Exception e) {
             
-            throw TokenException.tokenInvalido(e);
+            throw TokenException.erroValidacao(e);
 
         }
     }
