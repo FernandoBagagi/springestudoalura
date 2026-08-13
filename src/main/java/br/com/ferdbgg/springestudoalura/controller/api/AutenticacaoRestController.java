@@ -3,40 +3,40 @@ package br.com.ferdbgg.springestudoalura.controller.api;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAutenticacaoUsuario;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosResponseToken;
 import br.com.ferdbgg.springestudoalura.domain.entity.Usuario;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosAutenticacao;
+import br.com.ferdbgg.springestudoalura.model.api.response.DadosToken;
 import br.com.ferdbgg.springestudoalura.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/autenticacao")
+@RequestMapping("/api/autenticacao")
 @RequiredArgsConstructor
 public class AutenticacaoRestController {
 
-    private final AuthenticationManager manager;
+    private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
     @PostMapping
-    public ResponseEntity<Object> autenticar(@RequestBody @Valid DadosAutenticacaoUsuario dados) {
+    public ResponseEntity<DadosToken> autenticar(@RequestBody @Valid DadosAutenticacao dados) {
 
-        final UsernamePasswordAuthenticationToken authentication //
-                = new UsernamePasswordAuthenticationToken(dados.username(), dados.senha());
+        final var tokenAutenticacao = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
 
-        final Authentication tokenAuthentication = manager.authenticate(authentication);
+        final var autenticacao = authenticationManager.authenticate(tokenAutenticacao);
 
-        final Usuario usuario = (Usuario) tokenAuthentication.getPrincipal();
+        final var usuario = (Usuario) autenticacao.getPrincipal();
 
-        final DadosResponseToken token = tokenService.tentarGerarToken(usuario);
+        final var tokenGerado = tokenService.tentarGerarToken(usuario);
 
-        return ResponseEntity.ok(token);
+        final var response = new DadosToken(tokenGerado);
+
+        return ResponseEntity.ok(response);
 
     }
 
