@@ -29,7 +29,7 @@ public class ConfiguracaoDeSegurancaWeb {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    public SecurityFilterChain securityFilterChainWeb(HttpSecurity httpSecurity) {
 
         return httpSecurity
                 .securityMatcher( //
