@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Component
 @RequiredArgsConstructor
-public class FiltroDeSeguranca extends OncePerRequestFilter {
+public class FiltroTokenApi extends OncePerRequestFilter {
 
     private static final String PREFIX = "Bearer ";
 
