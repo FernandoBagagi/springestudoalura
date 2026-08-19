@@ -14,34 +14,38 @@
                 <h2 class="title">Agendamento de Consultas</h2>
 
                 <form method="post" action="#" th:action="@{/web/consultas}" th:object="${dados}">
-                    <!-- <input type="hidden" name="id" th:field="*{id}"> -->
+                    
+                    <input type="hidden" name="id" th:field="*{id}">
 
                     <div class="form-group">
-                        <label for="especialidade">Especialidade</label>
-                        <select id="especialidade" name="especialidade" required th:field="*{especialidade}">
-                            <option th:value="${null}">Selecione uma especialidade</option>
-                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${dados.especialidade == especialidade}"></option>
-                        </select>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="idMedico">Médico</label>
-                        <select id="idMedico" name="idMedico" required th:field="*{idMedico}">
+                        <label for="medicoId">Médico</label>
+                        <select id="medicoId" name="medicoId" required th:field="*{medicoId}">
                             <option th:value="${null}">Selecione um médico</option>
-                            <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}" th:selected="${dados.idMedico == idMedico}"></option>
+                            <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}" th:selected="${medico.id == dados.medicoId}"></option>
                         </select>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('idMedico')}" th:errors="*{idMedico}">Erro!</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="idPaciente">ID do Paciente</label>
-                        <input type="text" id="idPaciente" placeholder="Digite o ID do paciente" required th:field="*{idPaciente}">
+                        <label for="especialidade">Especialidade</label>
+                        <select id="especialidade" name="especialidade" required th:field="*{especialidade}">
+                            <option th:value="${null}">Selecione uma especialidade</option>
+                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${especialidade == dados.especialidade}"></option>
+                        </select>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pacienteId">Paciente</label>
+                        <select id="pacienteId" name="pacienteId" required th:field="*{pacienteId}">
+                            <option th:value="${null}">Selecione um paciente</option>
+                            <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nome}" th:selected="${paciente.id == dados.pacienteId}"></option>
+                        </select>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('idPaciente')}" th:errors="*{idPaciente}"></div>
                     </div>
 
                     <div class="form-group">
-                        <label for="dataHora">Data</label>
+                        <label for="dataHora">Data/Hora</label>
                         <input type="datetime-local" id="dataHora" required th:field="*{dataHora}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('dataHora')}" th:errors="*{dataHora}"></div>
                     </div>

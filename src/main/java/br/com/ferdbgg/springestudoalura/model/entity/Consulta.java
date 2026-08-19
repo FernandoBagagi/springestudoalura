@@ -1,8 +1,10 @@
-package br.com.ferdbgg.springestudoalura.domain.entity;
+package br.com.ferdbgg.springestudoalura.model.entity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 
+import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,17 +27,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Consulta {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_medico", nullable = false)
+    @JoinColumn(name = "medico_id", nullable = false)
     private Medico medico;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_paciente", nullable = false)
+    @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
 
     @Column(nullable = false)
@@ -43,5 +45,12 @@ public class Consulta {
 
     @Column(nullable = false)
     private LocalTime hora;
+
+    public OffsetDateTime getDataHora() {
+
+        return DataHoraUtil
+                .converterParaOffsetDateTime(dia, hora);
+
+    }
 
 }

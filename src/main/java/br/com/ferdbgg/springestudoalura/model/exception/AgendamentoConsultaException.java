@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.exception;
+package br.com.ferdbgg.springestudoalura.model.exception;
 
 public class AgendamentoConsultaException extends RuntimeException {
 
@@ -8,6 +8,21 @@ public class AgendamentoConsultaException extends RuntimeException {
 
     public AgendamentoConsultaException(String message) {
         super(message);
+    }
+
+    public static AgendamentoConsultaException diaClinicaFechada() {
+        return new AgendamentoConsultaException(
+                "A clínica está fechada no dia informado.");
+    }
+
+    public static AgendamentoConsultaException horarioClinicaFechada() {
+        return new AgendamentoConsultaException(
+                "A clínica está fechada na hora informada.");
+    }
+
+    public static AgendamentoConsultaException antecedenciaMinima(int minutos) {
+        return new AgendamentoConsultaException(
+                "A consulta deve ter uma atencedencia mínima de " + minutos + " minutos.");
     }
 
     public static AgendamentoConsultaException dadosObrigatorios() {
@@ -32,7 +47,7 @@ public class AgendamentoConsultaException extends RuntimeException {
 
     public static AgendamentoConsultaException consultaNaoEncontrada() {
         return new AgendamentoConsultaException(
-                "Não foi encontrado nenhuma consulta para o médico informado neste dia e hora.");
+                "Não foi encontrado nenhuma consulta neste dia e hora para o médico e/ou paciente informados.");
     }
 
     public static AgendamentoConsultaException pacienteNaoEncontrado() {
@@ -44,6 +59,5 @@ public class AgendamentoConsultaException extends RuntimeException {
         return new AgendamentoConsultaException(
                 "O médico não foi encontrado.");
     }
-    
 
 }

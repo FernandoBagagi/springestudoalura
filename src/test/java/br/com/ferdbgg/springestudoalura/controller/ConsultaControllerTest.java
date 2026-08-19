@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAgendamentoConsulta;
-import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosCadastroConsulta;
+import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
 import br.com.ferdbgg.springestudoalura.service.ConsultaService;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 
@@ -37,7 +37,7 @@ class ConsultaControllerTest {
     private MockMvc mvc;
 
     @Autowired
-    private JacksonTester<DadosAgendamentoConsulta> dadosAgendamentoConsultaJacksonTester;
+    private JacksonTester<DadosCadastroConsulta> dadosAgendamentoConsultaJacksonTester;
 
     @MockitoBean
     private ConsultaService service;
@@ -69,8 +69,8 @@ class ConsultaControllerTest {
         final OffsetDateTime dataHora = DataHoraUtil
                 .converterParaOffsetDateTime(dia, hora);
 
-        final DadosAgendamentoConsulta dadosAgendamentoConsulta = //
-                new DadosAgendamentoConsulta(idMedico, especialidade, idPaciente, dataHora);
+        final DadosCadastroConsulta dadosAgendamentoConsulta = //
+                new DadosCadastroConsulta(idMedico, especialidade, idPaciente, dataHora);
 
         final String jsonRequest = dadosAgendamentoConsultaJacksonTester
                 .write(dadosAgendamentoConsulta)
@@ -87,7 +87,7 @@ class ConsultaControllerTest {
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 
-        when(service.agendar(dadosAgendamentoConsulta)).thenReturn(null);
+        when(service.cadastrar(dadosAgendamentoConsulta)).thenReturn(null);
 
         assertThat(response.getContentAsString()).isNullOrEmpty();
 

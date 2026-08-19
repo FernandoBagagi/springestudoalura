@@ -23,20 +23,18 @@
                 <table class="tabela">
                     <thead>
                         <tr>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Telefone</th>
-                            <th>CPF</th>
+                            <th>Data/Hora</th>
+                            <th>Paciente</th>
+                            <th>Medico</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr th:each="consulta: ${consultas.conteudo}">
-                            <td th:text="${consulta.medicoNome}"></td>
-                            <td th:text="${consulta.pacienteNome}"></td>
                             <td th:text="${#temporals.format(consulta.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
-                            <td  th:text="${consulta.medicoEspecialidade}"></td>
+                            <td th:text="${consulta.pacienteNome}"></td>
+                            <td th:text="${consulta.medicoNome}"></td>
                             <td>
                                 <a href="#" class="btn btn-icon" th:href="@{/web/consultas/formulario?id={id}(id=${consulta.id})}" title="Editar">
                                     <img src="/static/web/assets/edit.svg" th:src="@{/web/assets/edit.svg}" alt="Editar">

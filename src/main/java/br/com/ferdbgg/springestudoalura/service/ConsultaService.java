@@ -4,76 +4,73 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAgendamentoConsulta;
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAtualizacaoAgendamentoConsulta;
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosFiltroConsulta;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosConsulta;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
-import br.com.ferdbgg.springestudoalura.domain.entity.Consulta;
-import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
-import br.com.ferdbgg.springestudoalura.domain.entity.Paciente;
-import br.com.ferdbgg.springestudoalura.domain.mapper.ConsultaMapper;
-import br.com.ferdbgg.springestudoalura.domain.mapper.PaginaMapper;
-import br.com.ferdbgg.springestudoalura.exception.AgendamentoConsultaException;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosAtualizacaoConsulta;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosCadastroConsulta;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosFiltroConsulta;
+import br.com.ferdbgg.springestudoalura.model.api.response.DadosConsulta;
+import br.com.ferdbgg.springestudoalura.model.api.response.Pagina;
+import br.com.ferdbgg.springestudoalura.model.entity.Consulta;
+import br.com.ferdbgg.springestudoalura.model.entity.Medico;
+import br.com.ferdbgg.springestudoalura.model.entity.Paciente;
+import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.exception.AgendamentoConsultaException;
+import br.com.ferdbgg.springestudoalura.model.mapper.ConsultaMapper;
+import br.com.ferdbgg.springestudoalura.model.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.ConsultaRepository;
-import br.com.ferdbgg.springestudoalura.repository.MedicoRepository;
-import br.com.ferdbgg.springestudoalura.repository.PacienteRepository;
 import br.com.ferdbgg.springestudoalura.repository.specification.ConsultaSpecifications;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
-import br.com.ferdbgg.springestudoalura.validator.consulta.ValidadorAgendamentoConsulta;
+import br.com.ferdbgg.springestudoalura.validator.consulta.ValidadorCadastroConsulta;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ConsultaService {
 
+    private final ConsultaMapper consultaMapper;
+
+    private final PaginaMapper paginaMapper;
+
     private final ConsultaRepository consultaRepository;
-    private final MedicoRepository medicoRepository;
-    private final PacienteRepository pacienteRepository;
+    
+    private final MedicoService medicoService;
+    
+    private final PacienteService pacienteService;
 
-    private final List<ValidadorAgendamentoConsulta> validadoresAgendamento;
-
-    public DadosFiltroConsulta buildFiltrofromIDs(Long medicoId, Long pacienteId) {
-        return new DadosFiltroConsulta(null, null, null, null, null, null, null, medicoId, null, null, null, pacienteId,
-                null);
-    }
+    private final List<ValidadorCadastroConsulta> validadores;
 
     @Transactional
-    public DadosConsulta agendar(DadosAgendamentoConsulta dados) {
+    public DadosConsulta cadastrar(DadosCadastroConsulta dados) {
 
-        validadoresAgendamento.forEach(v -> v.validar(dados));
+        validadores.forEach(v -> v.validar(dados));
 
-        final Medico medico = procurarMedicoPorDados(dados);
+        final var dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
+        final var hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
 
-        final LocalDate dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
-        final LocalTime hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
-
-        if (medico == null) {
-            throw AgendamentoConsultaException.medicoNaoEncontrado();
-        }
+        final var medico = procurarMedicoPorIdOuDisponibilidade(
+                dados.medicoId(),
+                dados.especialidade(),
+                dia,
+                hora);
 
         if (jaExisteConsultaMarcadaPara(medico, dia, hora)) {
             throw AgendamentoConsultaException.medicoJaPossuiConsulta();
         }
 
-        final Paciente paciente = pacienteRepository
-                .getReferenceByIdAndAtivoTrue(dados.idPaciente());
-
-        if (paciente == null) {
-            throw AgendamentoConsultaException.pacienteNaoEncontrado();
-        }
+        final var paciente = pacienteService
+                .pesquisarPorIdAndUsuarioAtivo(dados.pacienteId(), Paciente.class)
+                .orElseThrow(AgendamentoConsultaException::pacienteNaoEncontrado);
 
         if (jaExisteConsultaMarcadaPara(paciente, dia, hora)) {
             throw AgendamentoConsultaException.pacienteJaPossuiConsulta();
         }
 
-        Consulta consulta = new Consulta();
+        var consulta = new Consulta();
         consulta.setMedico(medico);
         consulta.setPaciente(paciente);
         consulta.setDia(dia);
@@ -81,18 +78,32 @@ public class ConsultaService {
 
         consulta = consultaRepository.save(consulta);
 
-        return ConsultaMapper.parseDadosConsulta(consulta);
+        return consultaMapper.parseDadosConsulta(consulta);
 
     }
 
-    private Medico procurarMedicoPorDados(DadosAgendamentoConsulta dados) {
+    // TODO: ver se tem como colocar no service
+    private Medico procurarMedicoPorIdOuDisponibilidade(
+            Long id,
+            EspecialidadeMedico especialidade,
+            LocalDate dia,
+            LocalTime hora //
+    ) {
 
-        if (dados.idMedico() != null) {
-            return procurarMedicoPorId(dados.idMedico());
+        if (id != null) {
+
+            return medicoService
+                    .pesquisarPorIdAndUsuarioAtivo(id, Medico.class)
+                    .orElseThrow(AgendamentoConsultaException::medicoNaoEncontrado);
+
         }
 
-        if (dados.especialidade() != null) {
-            return procurarMedicoDisponivelEspecialidade(dados);
+        if (especialidade != null) {
+
+            return medicoService
+                    .procurarMedicoDisponivel(especialidade, dia, hora)
+                    .orElseThrow(AgendamentoConsultaException::medicoNaoDisponivel);
+
         }
 
         throw AgendamentoConsultaException.dadosObrigatorios();
@@ -111,72 +122,38 @@ public class ConsultaService {
 
     }
 
-    private Medico procurarMedicoPorId(Long id) {
-
-        return medicoRepository.getReferenceByIdAndAtivoTrue(id);
-
-    }
-
-    private Medico procurarMedicoDisponivelEspecialidade(DadosAgendamentoConsulta dados) {
-
-        return medicoRepository
-                .findFirstMedicoDisponivel(
-                        dados.especialidade(),
-                        DataHoraUtil.converterParaLocalDate(dados.dataHora()),
-                        DataHoraUtil.converterParaLocalTime(dados.dataHora()))
-                .orElseThrow(AgendamentoConsultaException::medicoNaoDisponivel);
-
-    }
-
     public Pagina<DadosConsulta> listar(DadosFiltroConsulta filtro, Pageable pageable) {
 
-        final Page<DadosConsulta> page = consultaRepository
+        final var page = consultaRepository
                 .findAll(ConsultaSpecifications.buildSpecifications(filtro), pageable)
-                .map(ConsultaMapper::parseDadosConsulta);
+                .map(consultaMapper::parseDadosConsulta);
 
-        return PaginaMapper.map(page);
-
-    }
-
-    public DadosConsulta pesquisarPorId(Long id) {
-
-        return consultaRepository.findById(id, DadosConsulta.class);
+        return paginaMapper.parsePagina(page);
 
     }
 
-    public DadosAgendamentoConsulta pesquisarDadosAgendamentoConsultaPorId(Long id) {
+    public <T> Optional<T> pesquisarPorId(Long id, Class<T> type) {
 
-        final Consulta consulta = consultaRepository.findById(id, Consulta.class);
-
-        return new DadosAgendamentoConsulta(
-                consulta.getMedico().getId(),
-                consulta.getMedico().getEspecialidade(),
-                consulta.getPaciente().getId(),
-                DataHoraUtil.converterParaOffsetDateTime(
-                        consulta.getDia(),
-                        consulta.getHora()));
+        return consultaRepository.findById(id, type);
 
     }
 
     @Transactional
-    public DadosConsulta atualizarAgendamento(DadosAtualizacaoAgendamentoConsulta dados) {
+    public DadosConsulta atualizar(DadosAtualizacaoConsulta dados) {
 
-        final Consulta consulta = consultaRepository
+        final var consulta = consultaRepository
                 .findById(dados.id())
                 .orElseThrow(AgendamentoConsultaException::consultaNaoEncontrada);
 
-        if (!Boolean.TRUE.equals(consulta.getPaciente().getAtivo())) {
+        if (!Boolean.TRUE.equals(consulta.getPaciente().getUsuario().getAtivo())) {
             throw AgendamentoConsultaException.pacienteNaoEncontrado();
         }
 
-        final Medico medico = getMedicoOuProcurarPorId(consulta.getMedico(), dados.idMedico());
+        final var medico = getMedicoOuProcurarPorId(consulta.getMedico(), dados.medicoId())
+                .orElseThrow(AgendamentoConsultaException::medicoNaoEncontrado);
 
-        if (medico == null) {
-            throw AgendamentoConsultaException.medicoNaoEncontrado();
-        }
-
-        final LocalDate dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
-        final LocalTime hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
+        final var dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
+        final var hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
 
         if (jaExisteConsultaMarcadaPara(medico, dia, hora)) {
             throw AgendamentoConsultaException.medicoJaPossuiConsulta();
@@ -189,22 +166,26 @@ public class ConsultaService {
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
 
-        return ConsultaMapper.parseDadosConsulta(consulta);
+        return consultaMapper.parseDadosConsulta(consulta);
 
     }
 
-    private Medico getMedicoOuProcurarPorId(Medico medico, Long idMedico) {
+    private Optional<Medico> getMedicoOuProcurarPorId(Medico medico, Long medicoId) {
 
-        if (!Objects.equals(medico.getId(), idMedico)) {
-            return procurarMedicoPorId(idMedico);
+        if (!Objects.equals(medico.getId(), medicoId)) {
+
+            return medicoService.pesquisarPorIdAndUsuarioAtivo(medicoId, Medico.class);
+
         }
 
-        return Boolean.TRUE.equals(medico.getAtivo()) ? medico : null;
+        return Boolean.TRUE.equals(medico.getUsuario().getAtivo())
+                ? Optional.of(medico)
+                : Optional.empty();
 
     }
 
     @Transactional
-    public void cancelarAgendamentoPorId(Long id) {
+    public void deletarPorId(Long id) {
 
         consultaRepository.deleteById(id);
 

@@ -5,9 +5,9 @@ import java.time.LocalTime;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosFiltroConsulta;
-import br.com.ferdbgg.springestudoalura.domain.entity.Consulta;
-import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosFiltroConsulta;
+import br.com.ferdbgg.springestudoalura.model.entity.Consulta;
+import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
 
 public final class ConsultaSpecifications {
 
@@ -16,6 +16,7 @@ public final class ConsultaSpecifications {
     private static final String HORA = "hora";
     private static final String MEDICO = "medico";
     private static final String NOME = "nome";
+    private static final String SOBRENOME = "sobrenome";
     private static final String ESPECIALIDADE = "especialidade";
     private static final String CRM = "crm";
     private static final String PACIENTE = "paciente";
@@ -29,10 +30,10 @@ public final class ConsultaSpecifications {
                 : cb.equal(root.get(ID), id);
     }
 
-    private Specification<Consulta> diaEquals(LocalDate dia) {
-        return (root, query, cb) -> dia == null
+    private Specification<Consulta> diaExatoEquals(LocalDate diaExato) {
+        return (root, query, cb) -> diaExato == null
                 ? null
-                : cb.equal(root.get(DIA), dia);
+                : cb.equal(root.get(DIA), diaExato);
     }
 
     private Specification<Consulta> diaBetween(LocalDate inicio, LocalDate fim) {
@@ -60,10 +61,10 @@ public final class ConsultaSpecifications {
 
     }
 
-    private Specification<Consulta> horaEquals(LocalTime hora) {
-        return (root, query, cb) -> hora == null
+    private Specification<Consulta> horaExataEquals(LocalTime horaExata) {
+        return (root, query, cb) -> horaExata == null
                 ? null
-                : cb.equal(root.get(HORA), hora);
+                : cb.equal(root.get(HORA), horaExata);
     }
 
     private Specification<Consulta> horaBetween(LocalTime inicio, LocalTime fim) {
@@ -97,10 +98,16 @@ public final class ConsultaSpecifications {
                 : cb.equal(root.get(MEDICO).get(ID), medicoId);
     }
 
-    private Specification<Consulta> medicoNomeLike(String nome) {
-        return (root, query, cb) -> (nome == null || nome.isBlank())
+    private Specification<Consulta> medicoNomeLike(String medicoNome) {
+        return (root, query, cb) -> (medicoNome == null || medicoNome.isBlank())
                 ? null
-                : cb.like(cb.lower(root.get(MEDICO).get(NOME)), "%" + nome.toLowerCase() + "%");
+                : cb.like(cb.lower(root.get(MEDICO).get(NOME)), "%" + medicoNome.toLowerCase() + "%");
+    }
+
+    private Specification<Consulta> medicoSobrenomeLike(String medicoSobrenome) {
+        return (root, query, cb) -> (medicoSobrenome == null || medicoSobrenome.isBlank())
+                ? null
+                : cb.like(cb.lower(root.get(MEDICO).get(SOBRENOME)), "%" + medicoSobrenome.toLowerCase() + "%");
     }
 
     private Specification<Consulta> medicoEspecialidadeEquals(EspecialidadeMedico especialidade) {
@@ -132,13 +139,14 @@ public final class ConsultaSpecifications {
         final ConsultaSpecifications specs = new ConsultaSpecifications();
         return Specification
                 .where(specs.idEquals(filtro.id()))
-                .and(specs.diaEquals(filtro.dia()))
+                .and(specs.diaExatoEquals(filtro.diaExato()))
                 .and(specs.diaBetween(filtro.diaInicio(), filtro.diaFim()))
-                .and(specs.horaEquals(filtro.hora()))
+                .and(specs.horaExataEquals(filtro.horaExata()))
                 .and(specs.horaBetween(filtro.horaInicio(), filtro.horaFim()))
                 .and(specs.medicoIdEquals(filtro.medicoId()))
                 .and(specs.medicoNomeLike(filtro.medicoNome()))
-                .and(specs.medicoEspecialidadeEquals(EspecialidadeMedico.parse(filtro.medicoEspecialidade())))
+                .and(specs.medicoSobrenomeLike(filtro.medicoSobrenome()))
+                .and(specs.medicoEspecialidadeEquals(EspecialidadeMedico.valueOf(filtro.medicoEspecialidade())))
                 .and(specs.medicoCrmLike(filtro.medicoCrm()))
                 .and(specs.pacienteIdEquals(filtro.pacienteId()))
                 .and(specs.pacienteNomeLike(filtro.pacienteNome()));
