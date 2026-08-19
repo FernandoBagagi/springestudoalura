@@ -15,6 +15,6 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
     <T> Optional<T> findByIdAndUsuarioAtivo(Long id, Boolean ativo, Class<T> type);
 
-    <T> List<T> findAll(Class<T> type);
+    <T> List<T> findAllProjectedBy(Class<T> type);
 
 }

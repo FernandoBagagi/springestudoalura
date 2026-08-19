@@ -65,7 +65,7 @@ public class MedicoService {
     public DadosBasicosMedico[] listarTodosDadosBasicos() {
 
         return medicoRepository
-                .findAll(DadosBasicosMedico.class)
+                .findAllProjectedBy(DadosBasicosMedico.class)
                 .toArray(new DadosBasicosMedico[0]);
 
     }

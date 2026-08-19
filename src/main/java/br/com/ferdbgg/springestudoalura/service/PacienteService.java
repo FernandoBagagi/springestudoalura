@@ -65,7 +65,7 @@ public class PacienteService {
     public DadosBasicosPaciente[] listarTodosDadosBasicos() {
 
         return pacienteRepository
-                .findAll(DadosBasicosPaciente.class)
+                .findAllProjectedBy(DadosBasicosPaciente.class)
                 .toArray(new DadosBasicosPaciente[0]);
                 
     }

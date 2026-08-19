@@ -19,7 +19,7 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     
     <T> Optional<T> findByIdAndUsuarioAtivo(Long id, Boolean ativo, Class<T> type);
 
-    <T> List<T> findAll(Class<T> type); // Testar Example<S>
+    <T> List<T> findAllProjectedBy(Class<T> type); // Testar Example<S>
 
     @Query("""
             SELECT m.id
