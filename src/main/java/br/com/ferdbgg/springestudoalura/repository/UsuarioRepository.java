@@ -9,6 +9,6 @@ import br.com.ferdbgg.springestudoalura.model.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    Optional<UserDetails> findByLoginAndAtivoTrue(String login);
+    Optional<UserDetails> findByEmailAndAtivoTrue(String login);
 
 }
