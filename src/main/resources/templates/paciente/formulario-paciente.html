@@ -17,15 +17,45 @@
                     <input type="hidden" name="id" th:field="*{id}">
 
                     <div class="form-group">
+                        <label for="usuarioEmail">E-mail:</label>
+                        <input id="usuarioEmail" name="usuarioEmail" th:field="*{usuarioEmail}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioEmail')}" th:errors="*{usuarioEmail}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="usuarioLogin">Login:</label>
+                        <input id="usuarioLogin" name="usuarioLogin" th:field="*{usuarioLogin}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioLogin')}" th:errors="*{usuarioLogin}"></div>
+                    </div>
+
+                    <div class="form-group" th:if="${id != null && id != 0L}">
+                        <label for="senhaAntiga">Senha Antiga:</label>
+                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaAntiga')}" th:errors="*{senhaAntiga}">Erro!</div>
+                    </div>
+
+                    <div class="form-group" th:if="${id != null && id != 0L}">
+                        <label for="senhaNova">Senha Nova:</label>
+                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaNova')}" th:errors="*{senhaNova}">Erro!</div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input id="nome" name="nome" th:field="*{nome}" required>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro!</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input id="email" name="email" th:field="*{email}" required>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        <label for="cpf">CPF:</label>
+                        <input id="cpf" name="crm" th:field="*{cpf}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nascimento">Data de Nascimento</label>
+                        <input type="datetime-local" id="nascimento" required th:field="*{nascimento}">
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('nascimento')}" th:errors="*{nascimento}"></div>
                     </div>
 
                     <div class="form-group">
@@ -35,9 +65,45 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="cpf">CPF:</label>
-                        <input id="cpf" name="crm" th:field="*{cpf}" required>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></div>
+                        <label for="enderecoLogradouro">Logradouro:</label>
+                        <input id="enderecoLogradouro" name="enderecoLogradouro" th:field="*{enderecoLogradouro}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoLogradouro')}" th:errors="*{enderecoLogradouro}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enderecoNumero">Número:</label>
+                        <input id="enderecoNumero" name="enderecoNumero" th:field="*{enderecoNumero}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoNumero')}" th:errors="*{enderecoNumero}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enderecoComplemento">Complemento:</label>
+                        <input id="enderecoComplemento" name="enderecoComplemento" th:field="*{enderecoComplemento}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoComplemento')}" th:errors="*{enderecoComplemento}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enderecoBairro">Bairro:</label>
+                        <input id="enderecoBairro" name="enderecoBairro" th:field="*{enderecoBairro}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoBairro')}" th:errors="*{enderecoBairro}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enderecoCidade">Cidade:</label>
+                        <input id="enderecoCidade" name="enderecoCidade" th:field="*{enderecoCidade}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoCidade')}" th:errors="*{enderecoCidade}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enderecoUf">UF:</label>
+                        <input id="enderecoUf" name="enderecoUf" th:field="*{enderecoUf}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoUf')}" th:errors="*{enderecoUf}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="enderecoCep">CEP:</label>
+                        <input id="enderecoCep" name="enderecoCep" th:field="*{enderecoCep}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoCep')}" th:errors="*{enderecoCep}"></div>
                     </div>
 
                     <div class="buttons">

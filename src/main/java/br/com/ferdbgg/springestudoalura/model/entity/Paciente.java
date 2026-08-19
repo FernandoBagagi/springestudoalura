@@ -1,9 +1,14 @@
-package br.com.ferdbgg.springestudoalura.domain.entity;
+package br.com.ferdbgg.springestudoalura.model.entity;
+
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -23,26 +28,24 @@ public class Paciente {
     @Id
     private Long id;
 
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id")
+    private Usuario usuario;
+
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-    
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 14)
     private String cpf;
 
     @Column(nullable = false)
-    private Boolean ativo;
+    private LocalDate nascimento;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 13)
     private String telefone;
 
     @Embedded
     private Endereco endereco;
-
-    public Paciente(Long id) {
-        this.id = id;
-    }
 
 }

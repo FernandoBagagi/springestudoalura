@@ -23,20 +23,20 @@
                 <table class="tabela">
                     <thead>
                         <tr>
+                            <th>CPF</th>
                             <th>Nome</th>
-                            <!-- <th>Email</th> -->
-                            <!-- <th>Telefone</th> -->
-                            <!-- <th>CPF</th> -->
+                            <th>Email</th>
+                            <th>Telefone</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr th:each="paciente: ${pacientes.conteudo}">
+                            <td th:text="${paciente.cpf}"></td>
                             <td th:text="${paciente.nome}"></td>
-                            <!-- <td th:text="${paciente.email}"></td> -->
-                            <!-- <td th:text="${paciente.telefone}"></td> -->
-                            <!-- <td th:text="${paciente.cpf}"></td> -->
+                            <td th:text="${paciente.usuarioEmail}"></td>
+                            <td th:text="${paciente.telefone}"></td>
                             <td>
                                 <a href="#" class="btn btn-edit"
                                     th:href="@{/web/pacientes/formulario?id={id}(id=${paciente.id})}" title="Editar">

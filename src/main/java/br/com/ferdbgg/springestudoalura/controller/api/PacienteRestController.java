@@ -1,7 +1,5 @@
 package br.com.ferdbgg.springestudoalura.controller.api;
 
-import java.net.URI;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAtualizacaoMedicoPaciente;
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroPaciente;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosPaciente;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresPaciente;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosAtualizacaoPaciente;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosCadastroPaciente;
+import br.com.ferdbgg.springestudoalura.model.api.response.DadosBasicosPaciente;
+import br.com.ferdbgg.springestudoalura.model.api.response.DadosCompletosPaciente;
+import br.com.ferdbgg.springestudoalura.model.api.response.Pagina;
 import br.com.ferdbgg.springestudoalura.service.PacienteService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/pacientes")
+@RequestMapping("/api/pacientes")
 @SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 public class PacienteRestController {
@@ -36,12 +34,13 @@ public class PacienteRestController {
     @PostMapping
     public ResponseEntity<DadosBasicosPaciente> cadastrar(
             @RequestBody @Valid DadosCadastroPaciente dados,
-            UriComponentsBuilder uriBuilder) {
+            UriComponentsBuilder uriBuilder //
+    ) {
 
-        final DadosBasicosPaciente paciente = service.cadastrar(dados);
+        final var paciente = service.cadastrar(dados);
 
-        final URI uri = uriBuilder
-                .path("/pacientes/{id}")
+        final var uri = uriBuilder
+                .path("/api/pacientes/{id}")
                 .buildAndExpand(paciente.id())
                 .toUri();
 
@@ -53,28 +52,30 @@ public class PacienteRestController {
 
     @GetMapping
     public ResponseEntity<Pagina<DadosBasicosPaciente>> listar(
-            @PageableDefault(size = 50, sort = { "nome", "id" }) Pageable pageable) {
+            @PageableDefault(size = 50, sort = { "nome", "id" }) Pageable pageable //
+    ) {
 
-        final Pagina<DadosBasicosPaciente> pagina = service.listar(pageable);
+        final var pagina = service.listarDadosBasicos(pageable);
 
         return ResponseEntity.ok(pagina);
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DadosComplementaresPaciente> pesquisarPorId(@PathVariable Long id) {
+    public ResponseEntity<DadosCompletosPaciente> pesquisarPorId(@PathVariable Long id) {
 
-        final DadosComplementaresPaciente paciente = service.pesquisarPorId(id);
-        
-        return ResponseEntity.ok(paciente);
+        return service.pesquisarPorIdAndUsuarioAtivo(id, DadosCompletosPaciente.class)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
 
     }
 
     @PutMapping
-    public ResponseEntity<DadosBasicosPaciente> atualizarCadastro(
-        @RequestBody @Valid DadosAtualizacaoMedicoPaciente dados) {
-        
-        final DadosBasicosPaciente paciente = service.atualizarCadastro(dados);
+    public ResponseEntity<DadosBasicosPaciente> atualizar(
+            @RequestBody @Valid DadosAtualizacaoPaciente dados //
+    ) {
+
+        final var paciente = service.atualizar(dados);
 
         return ResponseEntity.ok(paciente);
 
@@ -84,11 +85,11 @@ public class PacienteRestController {
     public ResponseEntity<Object> inativarPorId(@PathVariable Long id) {
 
         service.inativarPorId(id);
-    
+
         return ResponseEntity
                 .noContent()
                 .build();
-    
+
     }
 
 }
