@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.domain.entity;
+package br.com.ferdbgg.springestudoalura.model.entity;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.com.ferdbgg.springestudoalura.domain.enums.PerfilUsuario;
+import br.com.ferdbgg.springestudoalura.model.enums.PerfilUsuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -37,6 +37,9 @@ public class Usuario implements UserDetails {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    private String email;
+    
+    @Column(nullable = false, unique = true)
     private String login;
 
     @Column(nullable = false)
@@ -46,23 +49,25 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     private PerfilUsuario perfil;
 
+    @Column(nullable = false)
+    private Boolean ativo;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        final var stringPerfil = String.valueOf(perfil);
-        final var authority = new SimpleGrantedAuthority(stringPerfil);
+        final var authority = new SimpleGrantedAuthority(perfil.name());
         return Collections.singletonList(authority);
 
     }
 
     @Override
-    public @Nullable String getPassword() {
-        return senha;
+    public String getUsername() {
+        return login;
     }
 
     @Override
-    public String getUsername() {
-        return login;
+    public @Nullable String getPassword() {
+        return senha;
     }
 
     public boolean isMedico() {
