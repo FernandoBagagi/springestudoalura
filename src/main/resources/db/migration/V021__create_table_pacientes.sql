@@ -2,7 +2,6 @@ CREATE TABLE
     pacientes (
         id BIGINT NOT NULL,
         nome VARCHAR(100) NOT NULL,
-        email VARCHAR(100) NOT NULL UNIQUE,
         cpf VARCHAR(14) NOT NULL UNIQUE,
         nascimento DATE NOT NULL,
         telefone VARCHAR(13) NOT NULL,
