@@ -11,12 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroEndereco;
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
-import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
-import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.enums.Genero;
+import br.com.ferdbgg.springestudoalura.model.mapper.MedicoMapper;
+import br.com.ferdbgg.springestudoalura.model.web.form.CadastroEdicaoMedicoForm;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 
 @Controller
@@ -29,11 +27,21 @@ public class MedicoController {
     private static final String PAGINA_CADASTRO = "medico/formulario-medico";
     private static final String REDIRECT_LISTAGEM = "redirect:/web/medicos?sucesso";
 
+    private final MedicoMapper mapper;
     private final MedicoService service;
+
+    @ModelAttribute("generos")
+    public Genero[] generos() {
+
+        return Genero.values();
+
+    }
 
     @ModelAttribute("especialidades")
     public EspecialidadeMedico[] especialidades() {
+
         return EspecialidadeMedico.values();
+
     }
 
     @GetMapping
@@ -41,84 +49,75 @@ public class MedicoController {
             @PageableDefault Pageable paginacao, //
             Model model //
     ) {
-        var medicosCadastrados = service.listar(paginacao);
-        model.addAttribute("medicos", medicosCadastrados);
+        
+        final var medicos = service.listarDadosBasicos(paginacao);
+        
+        model.addAttribute("medicos", medicos);
+        
         return PAGINA_LISTAGEM;
+
     }
 
     @GetMapping("formulario")
     @PreAuthorize("hasAuthority('ATENDENTE') OR hasAuthority('MEDICO')")
     public String carregarPaginaCadastro(Long id, Model model) {
 
-        final Medico dados = id == null
-                ? new Medico(
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null)
-                : service.pesquisarMedicoPorId(id);
+        final var form = service
+                .pesquisarPorIdAndUsuarioAtivo(id, CadastroEdicaoMedicoForm.class)
+                .orElse(CadastroEdicaoMedicoForm.empty());
 
-        model.addAttribute(DADOS, dados);
+        model.addAttribute(DADOS, form);
 
         return PAGINA_CADASTRO;
+
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('ATENDENTE')")
     public String cadastrar( //
-            @Valid @ModelAttribute(DADOS) DadosCadastroMedico dados, //
+            @Valid @ModelAttribute(DADOS) CadastroEdicaoMedicoForm form, //
             BindingResult result, //
             Model model //
     ) {
 
-        final DadosCadastroMedico novosDados = new DadosCadastroMedico(
-                dados.nome(),
-                dados.email(),
-                dados.telefone(),
-                dados.crm(),
-                dados.especialidade(),
-                new DadosCadastroEndereco(
-                        "Avenida Paulista",
-                        "Bela Vista",
-                        "01311-000",
-                        "São Paulo",
-                        "SP",
-                        "Sala 1203",
-                        "1578"));
-
         if (result.hasErrors()) {
-            model.addAttribute(DADOS, novosDados);
+
+            model.addAttribute(DADOS, form);
+
             return PAGINA_CADASTRO;
+
         }
 
         try {
-            service.cadastrar(novosDados);
+
+            if (form.isCadastro()) {
+                service.cadastrar(mapper.parseDadosCadastro(form));
+            } else {
+                service.atualizar(mapper.parseDadosAtualizacao(form));
+            }
+
+            
             return REDIRECT_LISTAGEM;
+
         } catch (RuntimeException e) {
+
             model.addAttribute("erro", e.getMessage());
-            model.addAttribute(DADOS, novosDados);
+            model.addAttribute(DADOS, form);
+
             return PAGINA_CADASTRO;
+
         }
+
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('ATENDENTE')")
     public String excluir(Long id) {
-        service.inativarPorId(id);
-        return REDIRECT_LISTAGEM;
-    }
 
-    @GetMapping("{especialidade}")
-    @ResponseBody
-    public Pagina<DadosBasicosMedico> listarMedicosPorEspecialidade( //
-            @PageableDefault Pageable paginacao, //
-            @PathVariable String especialidade //
-    ) {
-        return service.listar(paginacao);
+        service.inativarPorId(id);
+        
+        return REDIRECT_LISTAGEM;
+    
     }
 
 }

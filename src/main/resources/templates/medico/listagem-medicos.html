@@ -23,18 +23,18 @@
                 <table class="tabela">
                     <thead>
                         <tr>
+                            <th>Especialidade</th>
                             <th>Nome</th>
                             <th>CRM</th>
-                            <th>Especialidade</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         <tr th:each="medico: ${medicos.conteudo}">
-                            <td th:text="${medico.nome}"></td>
-                            <td th:text="${medico.crm}"></td>
                             <td th:text="${medico.especialidade}"></td>
+                            <td th:text="${medico.nomeMedico}"></td>
+                            <td th:text="${medico.crm}"></td>
                             <td>
                                 <a href="#" class="btn btn-edit"
                                     th:href="@{/web/medicos/formulario?id={id}(id=${medico.id})}" title="Editar">

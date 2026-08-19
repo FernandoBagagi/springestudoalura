@@ -1,7 +1,5 @@
 package br.com.ferdbgg.springestudoalura.controller.api;
 
-import java.net.URI;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +13,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosAtualizacaoMedicoPaciente;
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosComplementaresMedico;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosAtualizacaoMedico;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosCadastroMedico;
+import br.com.ferdbgg.springestudoalura.model.api.response.DadosBasicosMedico;
+import br.com.ferdbgg.springestudoalura.model.api.response.DadosCompletosMedico;
+import br.com.ferdbgg.springestudoalura.model.api.response.Pagina;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/medicos")
+@RequestMapping("/api/medicos")
 @SecurityRequirement(name = "bearer-key")
 @RequiredArgsConstructor
 public class MedicoRestController {
@@ -36,12 +34,13 @@ public class MedicoRestController {
     @PostMapping
     public ResponseEntity<DadosBasicosMedico> cadastrar(
             @RequestBody @Valid DadosCadastroMedico dados,
-            UriComponentsBuilder uriBuilder) {
+            UriComponentsBuilder uriBuilder //
+    ) {
 
-        final DadosBasicosMedico medico = service.cadastrar(dados);
+        final var medico = service.cadastrar(dados);
 
-        final URI uri = uriBuilder
-                .path("/medicos/{id}")
+        final var uri = uriBuilder
+                .path("/api/medicos/{id}")
                 .buildAndExpand(medico.id())
                 .toUri();
 
@@ -53,28 +52,30 @@ public class MedicoRestController {
 
     @GetMapping
     public ResponseEntity<Pagina<DadosBasicosMedico>> listar(
-            @PageableDefault(sort = { "especialidade", "nome", "id" }) Pageable pageable) {
+            @PageableDefault(size = 50, sort = { "especialidade", "nome", "id" }) Pageable pageable //
+    ) {
 
-        final Pagina<DadosBasicosMedico> pagina = service.listar(pageable);
+        final var pagina = service.listarDadosBasicos(pageable);
 
         return ResponseEntity.ok(pagina);
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DadosComplementaresMedico> pesquisarPorId(@PathVariable Long id) {
+    public ResponseEntity<DadosCompletosMedico> pesquisarPorId(@PathVariable Long id) {
 
-        final DadosComplementaresMedico medico = service.pesquisarPorId(id);
-
-        return ResponseEntity.ok(medico);
+        return service.pesquisarPorIdAndUsuarioAtivo(id, DadosCompletosMedico.class)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
 
     }
 
     @PutMapping
-    public ResponseEntity<DadosBasicosMedico> atualizarCadastro(
-            @RequestBody @Valid DadosAtualizacaoMedicoPaciente dados) {
+    public ResponseEntity<DadosBasicosMedico> atualizar(
+            @RequestBody @Valid DadosAtualizacaoMedico dados //
+    ) {
 
-        final DadosBasicosMedico medico = service.atualizarCadastro(dados);
+        final var medico = service.atualizar(dados);
 
         return ResponseEntity.ok(medico);
 

@@ -1,17 +1,15 @@
-package br.com.ferdbgg.springestudoalura.domain.mapper;
+package br.com.ferdbgg.springestudoalura.model.mapper;
 
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.response.MetadadosPagina;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.Pagina;
+import br.com.ferdbgg.springestudoalura.model.api.response.MetadadosPagina;
+import br.com.ferdbgg.springestudoalura.model.api.response.Pagina;
 
+@Component
 public class PaginaMapper {
     
-    private PaginaMapper() {
-
-    }
-
-    public static <T> Pagina<T> map(Page<T> page) {
+    public <T> Pagina<T> parsePagina(Page<T> page) {
 
         final MetadadosPagina metadados = new MetadadosPagina(
                 page.getNumber(),

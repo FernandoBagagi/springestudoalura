@@ -18,17 +18,17 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroEndereco;
-import br.com.ferdbgg.springestudoalura.domain.dto.request.DadosCadastroMedico;
-import br.com.ferdbgg.springestudoalura.domain.dto.response.DadosBasicosMedico;
-import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
-import br.com.ferdbgg.springestudoalura.domain.mapper.MedicoMapper;
+import br.com.ferdbgg.springestudoalura.model.api.request.DadosCadastroMedico;
+import br.com.ferdbgg.springestudoalura.model.api.response.DadosBasicosMedico;
+import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.enums.Genero;
+import br.com.ferdbgg.springestudoalura.model.mapper.MedicoMapper;
 import br.com.ferdbgg.springestudoalura.service.MedicoService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureJsonTesters
-class MedicoControllerTest {
+class MedicoRestControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -62,44 +62,36 @@ class MedicoControllerTest {
     @WithMockUser
     void cadastrar_cenario2() throws Exception {
         var dadosCadastro = new DadosCadastroMedico(
-                "Ana Beatriz de Albuquerque Souza",
-                "ana.souza@estudo.spring",
-                "11 77834-5612",
-                "CRM/UF 482391",
-                EspecialidadeMedico.CARDIOLOGIA,
-                dadosEndereco());
+                "beatriz.souza@estudo.spring", 
+                "beatriz.souza", 
+                Genero.FEMININO, 
+                "Beatriz", 
+                "Souza", 
+                "CRM/UF 482391", 
+                EspecialidadeMedico.CARDIOLOGIA);
 
         when(service.cadastrar(any()))
                 .thenReturn(mapper.parseDadosBasicos(mapper.parseMedico(dadosCadastro)));
 
         var response = mvc
-                .perform(post("/medicos")
+                .perform(post("/api/medicos")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(dadosCadastroMedicoJson.write(dadosCadastro).getJson()))
                 .andReturn().getResponse();
 
         var dadosBasicos = new DadosBasicosMedico(
-                null,
-                dadosCadastro.nome(),
-                dadosCadastro.crm(),
-                dadosCadastro.especialidade());
+                null, 
+                dadosCadastro.especialidade(), 
+                dadosCadastro.genero(), 
+                dadosCadastro.nome(), 
+                dadosCadastro.sobrenome(), 
+                dadosCadastro.crm());
 
         var jsonEsperado = dadosBasicosMedicoJson.write(dadosBasicos).getJson();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.getContentAsString()).isEqualTo(jsonEsperado);
 
-    }
-
-    private DadosCadastroEndereco dadosEndereco() {
-        return new DadosCadastroEndereco(
-                "Avenida Paulista",
-                "Bela Vista",
-                "01311-000",
-                "São Paulo",
-                "SP",
-                "Sala 1203",
-                "1578");
     }
 
 }

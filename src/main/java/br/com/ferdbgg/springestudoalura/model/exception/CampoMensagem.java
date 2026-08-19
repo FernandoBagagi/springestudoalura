@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.exception;
+package br.com.ferdbgg.springestudoalura.model.exception;
 
 public record CampoMensagem(
         String campo,

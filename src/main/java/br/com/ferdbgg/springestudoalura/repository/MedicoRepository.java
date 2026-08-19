@@ -10,25 +10,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import br.com.ferdbgg.springestudoalura.domain.entity.Medico;
-import br.com.ferdbgg.springestudoalura.domain.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.entity.Medico;
+import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
 
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
 
-    @Query("SELECT m.id FROM Medico m WHERE m.id = :id AND m.ativo = TRUE")
-    Medico getReferenceByIdAndAtivoTrue(Long id);
+    <T> Page<T> findByUsuarioAtivo(Boolean ativo, Class<T> type, Pageable pageable);
+    
+    <T> Optional<T> findByIdAndUsuarioAtivo(Long id, Boolean ativo, Class<T> type);
 
-    <T> Page<T> findByAtivo(Boolean ativo, Class<T> type, Pageable pageable);
-
-    <T> Optional<T> findByIdAndAtivo(Long id, Boolean ativo, Class<T> type);
-
-    List<Medico> findByEspecialidadeAndAtivoTrue(EspecialidadeMedico especialidade);
+    <T> List<T> findAll(Class<T> type); // Testar Example<S>
 
     @Query("""
             SELECT m.id
             FROM Medico m
             WHERE m.especialidade = :especialidade
-            AND m.ativo = TRUE
+            AND m.usuario.ativo = TRUE
             AND NOT EXISTS (
                 SELECT c
                 FROM Consulta c
@@ -43,5 +40,7 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
             EspecialidadeMedico especialidade,
             LocalDate dia,
             LocalTime hora);
+
+    Long countByEspecialidadeAndUsuarioAtivoTrue(EspecialidadeMedico especialidade);
 
 }

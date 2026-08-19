@@ -14,24 +14,51 @@
                 <h2 class="title">Cadastro de médico</h2>
 
                 <form method="post" action="#" th:action="@{/web/medicos}" th:object="${dados}">
-                    <!-- <input type="hidden" name="id" th:field="*{id}"> -->
+                    <input type="hidden" name="id" th:field="*{id}">
+
+                    <div class="form-group">
+                        <label for="usuarioEmail">Email:</label>
+                        <input id="usuarioEmail" name="usuarioEmail" th:field="*{usuarioEmail}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioEmail')}" th:errors="*{usuarioEmail}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="usuarioLogin">Login:</label>
+                        <input id="usuarioLogin" name="usuarioLogin" th:field="*{usuarioLogin}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioLogin')}" th:errors="*{usuarioLogin}"></div>
+                    </div>
+
+                    <div class="form-group" th:if="${id != null && id != 0L}">
+                        <label for="senhaAntiga">Senha Antiga:</label>
+                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaAntiga')}" th:errors="*{senhaAntiga}"></div>
+                    </div>
+
+                    <div class="form-group" th:if="${id != null && id != 0L}">
+                        <label for="senhaNova">Senha Nova:</label>
+                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaNova')}" th:errors="*{senhaNova}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genero">Gênero</label>
+                        <select id="genero" name="genero" required th:field="*{genero}">
+                            <option th:value="${null}">Selecione uma especialidade</option>
+                            <option th:each="genero : ${generos}" th:value="${genero}" th:text="${genero}" th:selected="${dados.genero == genero}"></option>
+                        </select>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></div>
+                    </div>
 
                     <div class="form-group">
                         <label for="nome">Nome:</label>
                         <input id="nome" name="nome" th:field="*{nome}" required>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Erro!</div>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></div>
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input id="email" name="email" th:field="*{email}" required>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="telefone">Telefone:</label>
-                        <input id="telefone" name="telefone" th:field="*{telefone}" required>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></div>
+                        <label for="sobrenome">Sobrenome:</label>
+                        <input id="sobrenome" name="sobrenome" th:field="*{sobrenome}" required>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('sobrenome')}" th:errors="*{sobrenome}"></div>
                     </div>
 
                     <div class="form-group">
