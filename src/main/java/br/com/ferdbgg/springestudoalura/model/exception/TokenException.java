@@ -1,4 +1,4 @@
-package br.com.ferdbgg.springestudoalura.exception;
+package br.com.ferdbgg.springestudoalura.model.exception;
 
 public class TokenException extends RuntimeException {
 
@@ -6,6 +6,7 @@ public class TokenException extends RuntimeException {
         super(message, cause);
     }
 
+    // Padrão Static Factory Method
     public static TokenException erroGeracao (Throwable cause) {
         return new TokenException("Token não gerado", cause);
     }

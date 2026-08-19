@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.ferdbgg.springestudoalura.domain.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.model.api.request.DadosAutenticacao;
 import br.com.ferdbgg.springestudoalura.model.api.response.DadosToken;
+import br.com.ferdbgg.springestudoalura.model.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
