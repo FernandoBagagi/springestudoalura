@@ -1,6 +1,9 @@
 package br.com.ferdbgg.springestudoalura.model.web.form;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
 import br.com.ferdbgg.springestudoalura.validator.anotacoes.MinutosMultiploQuinze;
@@ -15,14 +18,15 @@ public record CadastroEdicaoConsultaForm(
         @Positive //
         Long medicoId,
 
-        EspecialidadeMedico especialidade,
+        EspecialidadeMedico medicoEspecialidade,
 
         @Positive //
         Long pacienteId,
 
-        @MinutosMultiploQuinze //
-        @SegundosZerados //
-        OffsetDateTime dataHora
+        //@MinutosMultiploQuinze //
+        //@SegundosZerados //
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") //
+        LocalDateTime dataHora
 
 ) {
 

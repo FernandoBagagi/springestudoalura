@@ -146,7 +146,7 @@ public final class ConsultaSpecifications {
                 .and(specs.medicoIdEquals(filtro.medicoId()))
                 .and(specs.medicoNomeLike(filtro.medicoNome()))
                 .and(specs.medicoSobrenomeLike(filtro.medicoSobrenome()))
-                .and(specs.medicoEspecialidadeEquals(EspecialidadeMedico.valueOf(filtro.medicoEspecialidade())))
+                .and(specs.medicoEspecialidadeEquals(filtro.medicoEspecialidade()))
                 .and(specs.medicoCrmLike(filtro.medicoCrm()))
                 .and(specs.pacienteIdEquals(filtro.pacienteId()))
                 .and(specs.pacienteNomeLike(filtro.pacienteNome()));

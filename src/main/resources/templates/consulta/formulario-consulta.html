@@ -19,34 +19,34 @@
 
                     <div class="form-group">
                         <label for="medicoId">Médico</label>
-                        <select id="medicoId" name="medicoId" required th:field="*{medicoId}">
+                        <select id="medicoId" name="medicoId" th:field="*{medicoId}">
                             <option th:value="${null}">Selecione um médico</option>
-                            <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}" th:selected="${medico.id == dados.medicoId}"></option>
+                            <option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}" th:selected="${medico.id == medicoId}"></option>
                         </select>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('idMedico')}" th:errors="*{idMedico}">Erro!</div>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('medicoId')}" th:errors="*{medicoId}">Erro!</div>
                     </div>
 
                     <div class="form-group">
-                        <label for="especialidade">Especialidade</label>
-                        <select id="especialidade" name="especialidade" required th:field="*{especialidade}">
+                        <label for="medicoEspecialidade">Especialidade</label>
+                        <select id="medicoEspecialidade" name="medicoEspecialidade" th:field="*{medicoEspecialidade}">
                             <option th:value="${null}">Selecione uma especialidade</option>
-                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${especialidade == dados.especialidade}"></option>
+                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${especialidade == medicoEspecialidade}"></option>
                         </select>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></div>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('medicoEspecialidade')}" th:errors="*{medicoEspecialidade}"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="pacienteId">Paciente</label>
-                        <select id="pacienteId" name="pacienteId" required th:field="*{pacienteId}">
+                        <select id="pacienteId" name="pacienteId" th:field="*{pacienteId}" required>
                             <option th:value="${null}">Selecione um paciente</option>
-                            <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nome}" th:selected="${paciente.id == dados.pacienteId}"></option>
+                            <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nome}" th:selected="${paciente.id == pacienteId}"></option>
                         </select>
-                        <div class="alert alert-danger" th:if="${#fields.hasErrors('idPaciente')}" th:errors="*{idPaciente}"></div>
+                        <div class="alert alert-danger" th:if="${#fields.hasErrors('pacienteId')}" th:errors="*{pacienteId}"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="dataHora">Data/Hora</label>
-                        <input type="datetime-local" id="dataHora" required th:field="*{dataHora}">
+                        <input type="datetime-local" id="dataHora" th:field="*{dataHora}" required>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('dataHora')}" th:errors="*{dataHora}"></div>
                     </div>
 

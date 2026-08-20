@@ -63,7 +63,7 @@ public class DataHoraUtil {
             return null;
         }
 
-        return dateTime.toInstant(ZoneOffset.UTC).atZone(BRASILIA).toOffsetDateTime();
+        return OffsetDateTime.of(dateTime, SAO_PAULO_OFFSET);
 
     }
 

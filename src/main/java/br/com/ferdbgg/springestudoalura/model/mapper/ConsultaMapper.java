@@ -1,5 +1,7 @@
 package br.com.ferdbgg.springestudoalura.model.mapper;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Component;
 
 import br.com.ferdbgg.springestudoalura.model.api.request.DadosAtualizacaoConsulta;
@@ -7,34 +9,35 @@ import br.com.ferdbgg.springestudoalura.model.api.request.DadosCadastroConsulta;
 import br.com.ferdbgg.springestudoalura.model.api.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.model.entity.Consulta;
 import br.com.ferdbgg.springestudoalura.model.web.form.CadastroEdicaoConsultaForm;
+import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
 
 @Component
 public class ConsultaMapper {
 
-    public DadosConsulta parseDadosConsulta(Consulta consulta) {
+    public DadosConsulta parseDadosConsulta(Consulta dados) {
 
         return new DadosConsulta(
-                consulta.getId(),
-                consulta.getDia(),
-                consulta.getHora(),
-                consulta.getMedico().getId(),
-                consulta.getMedico().getEspecialidade(),
-                consulta.getMedico().getGenero(),
-                consulta.getMedico().getNome(),
-                consulta.getMedico().getSobrenome(),
-                consulta.getMedico().getCrm(),
-                consulta.getPaciente().getId(),
-                consulta.getPaciente().getNome());
+                dados.getId(),
+                dados.getDia(),
+                dados.getHora(),
+                dados.getMedico().getId(),
+                dados.getMedico().getEspecialidade(),
+                dados.getMedico().getGenero(),
+                dados.getMedico().getNome(),
+                dados.getMedico().getSobrenome(),
+                dados.getMedico().getCrm(),
+                dados.getPaciente().getId(),
+                dados.getPaciente().getNome());
 
     }
 
-    public DadosCadastroConsulta parseDadosCadastro(Consulta consulta) {
+    public DadosCadastroConsulta parseDadosCadastro(Consulta dados) {
 
         return new DadosCadastroConsulta(
-                consulta.getMedico().getId(),
-                consulta.getMedico().getEspecialidade(),
-                consulta.getPaciente().getId(),
-                consulta.getDataHora());
+                dados.getMedico().getId(),
+                dados.getMedico().getEspecialidade(),
+                dados.getPaciente().getId(),
+                dados.getDataHora());
 
     }
 
@@ -42,9 +45,9 @@ public class ConsultaMapper {
 
         return new DadosCadastroConsulta(
                 dados.medicoId(),
-                dados.especialidade(),
+                dados.medicoEspecialidade(),
                 dados.pacienteId(),
-                dados.dataHora());
+                DataHoraUtil.converterParaOffsetDateTime(dados.dataHora()));
 
     }
 
@@ -53,7 +56,20 @@ public class ConsultaMapper {
         return new DadosAtualizacaoConsulta(
                 dados.id(),
                 dados.medicoId(),
-                dados.dataHora());
+                DataHoraUtil.converterParaOffsetDateTime(dados.dataHora()));
+
+    }
+
+    public CadastroEdicaoConsultaForm parseCadastroEdicaoForm(Consulta dados) {
+
+        return new CadastroEdicaoConsultaForm(
+                dados.getId(),
+                dados.getMedico().getId(),
+                dados.getMedico().getEspecialidade(),
+                dados.getPaciente().getId(),
+                LocalDateTime.of(
+                        dados.getDia(),
+                        dados.getHora()));
 
     }
 

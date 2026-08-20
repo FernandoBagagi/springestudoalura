@@ -22,7 +22,7 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     <T> List<T> findAllProjectedBy(Class<T> type); // Testar Example<S>
 
     @Query("""
-            SELECT m.id
+            SELECT m
             FROM Medico m
             WHERE m.especialidade = :especialidade
             AND m.usuario.ativo = TRUE

@@ -3,7 +3,9 @@ package br.com.ferdbgg.springestudoalura.controller.web;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.hibernate.query.SortDirection;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import br.com.ferdbgg.springestudoalura.model.api.request.DadosFiltroConsulta;
 import br.com.ferdbgg.springestudoalura.model.api.response.DadosBasicosMedico;
 import br.com.ferdbgg.springestudoalura.model.api.response.DadosBasicosPaciente;
+import br.com.ferdbgg.springestudoalura.model.entity.Consulta;
 import br.com.ferdbgg.springestudoalura.model.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
 import br.com.ferdbgg.springestudoalura.model.mapper.ConsultaMapper;
@@ -31,7 +34,7 @@ public class ConsultaController {
     private static final String DADOS = "dados";
     private static final String PAGINA_LISTAGEM = "consulta/listagem-consultas";
     private static final String PAGINA_CADASTRO = "consulta/formulario-consulta";
-    private static final String REDIRECT_LISTAGEM = "redirect:/consultas?sucesso";
+    private static final String REDIRECT_LISTAGEM = "redirect:/web/consultas?sucesso";
 
     private final ConsultaMapper mapper;
     private final ConsultaService consultaService;
@@ -61,7 +64,7 @@ public class ConsultaController {
 
     @GetMapping
     public String carregarPaginaListagem(
-            @PageableDefault Pageable paginacao, //
+            @PageableDefault(size = 5, sort = { "dia", "hora" }, direction = Direction.DESC)  Pageable paginacao, //
             Model model, //
             @AuthenticationPrincipal Usuario usuarioLogado //
     ) {
@@ -84,9 +87,11 @@ public class ConsultaController {
             "(hasAuthority('PACIENTE') AND (#id == null OR @consultaService.pesquisarDadosAgendamentoConsultaPorId(#id).idPaciente == authentication.principal.id))")
     public String carregarPaginaCadastro(Long id, Model model) {
 
-        final var form = consultaService
-                .pesquisarPorId(id, CadastroEdicaoConsultaForm.class)
-                .orElse(CadastroEdicaoConsultaForm.empty());
+        final var dados = consultaService.pesquisarPorId(id, Consulta.class);
+
+        final CadastroEdicaoConsultaForm form = dados.isPresent()
+                ? mapper.parseCadastroEdicaoForm(dados.get())
+                : CadastroEdicaoConsultaForm.empty();
 
         model.addAttribute(DADOS, form);
 
@@ -124,9 +129,9 @@ public class ConsultaController {
 
             model.addAttribute("erro", e.getMessage());
             model.addAttribute(DADOS, form);
-            
+
             return PAGINA_CADASTRO;
-        
+
         }
 
     }
@@ -137,11 +142,11 @@ public class ConsultaController {
             +
             "(hasAuthority('MEDICO') AND @consultaService.pesquisarDadosAgendamentoConsultaPorId(#id).idMedico == authentication.principal.id)")
     public String excluir(Long id) {
-        
+
         consultaService.deletarPorId(id);
-        
+
         return REDIRECT_LISTAGEM;
-    
+
     }
 
 }

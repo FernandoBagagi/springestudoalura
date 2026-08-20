@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
+
 public record DadosFiltroConsulta(
 
                 Long id,
@@ -33,7 +35,7 @@ public record DadosFiltroConsulta(
 
                 String medicoSobrenome,
 
-                String medicoEspecialidade,
+                EspecialidadeMedico medicoEspecialidade,
 
                 String medicoCrm,
 
