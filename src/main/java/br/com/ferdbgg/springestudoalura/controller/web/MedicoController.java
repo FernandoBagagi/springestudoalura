@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.ferdbgg.springestudoalura.model.entity.Medico;
 import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
 import br.com.ferdbgg.springestudoalura.model.enums.Genero;
 import br.com.ferdbgg.springestudoalura.model.mapper.MedicoMapper;
@@ -49,11 +50,11 @@ public class MedicoController {
             @PageableDefault Pageable paginacao, //
             Model model //
     ) {
-        
+
         final var medicos = service.listarDadosBasicos(paginacao);
-        
+
         model.addAttribute("medicos", medicos);
-        
+
         return PAGINA_LISTAGEM;
 
     }
@@ -62,9 +63,12 @@ public class MedicoController {
     @PreAuthorize("hasAuthority('ATENDENTE') OR hasAuthority('MEDICO')")
     public String carregarPaginaCadastro(Long id, Model model) {
 
-        final var form = service
-                .pesquisarPorIdAndUsuarioAtivo(id, CadastroEdicaoMedicoForm.class)
-                .orElse(CadastroEdicaoMedicoForm.empty());
+        final var dados = service
+                .pesquisarPorIdAndUsuarioAtivo(id, Medico.class);
+
+        final var form = dados.isPresent()
+                ? mapper.parseCadastroEdicaoForm(dados.get())
+                : CadastroEdicaoMedicoForm.empty();
 
         model.addAttribute(DADOS, form);
 
@@ -96,7 +100,6 @@ public class MedicoController {
                 service.atualizar(mapper.parseDadosAtualizacao(form));
             }
 
-            
             return REDIRECT_LISTAGEM;
 
         } catch (RuntimeException e) {
@@ -115,9 +118,9 @@ public class MedicoController {
     public String excluir(Long id) {
 
         service.inativarPorId(id);
-        
+
         return REDIRECT_LISTAGEM;
-    
+
     }
 
 }

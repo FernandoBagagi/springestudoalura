@@ -28,15 +28,15 @@
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioLogin')}" th:errors="*{usuarioLogin}"></div>
                     </div>
 
-                    <div class="form-group" th:if="${id != null && id != 0L}">
+                    <div class="form-group" th:unless="${cadastro}">
                         <label for="senhaAntiga">Senha Antiga:</label>
-                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}" required>
+                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaAntiga')}" th:errors="*{senhaAntiga}"></div>
                     </div>
 
-                    <div class="form-group" th:if="${id != null && id != 0L}">
+                    <div class="form-group" th:unless="${cadastro}">
                         <label for="senhaNova">Senha Nova:</label>
-                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}" required>
+                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaNova')}" th:errors="*{senhaNova}"></div>
                     </div>
 
@@ -69,7 +69,7 @@
 
                     <div class="form-group">
                         <label for="especialidade">Especialidade</label>
-                        <select id="especialidade" name="especialidade" required th:field="*{especialidade}">
+                        <select id="especialidade" name="especialidade" th:field="*{especialidade}" required>
                             <option th:value="${null}">Selecione uma especialidade</option>
                             <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${dados.especialidade == especialidade}"></option>
                         </select>
@@ -77,8 +77,8 @@
                     </div>
 
                     <div class="buttons">
-                        <button type="submit" class="btn btn-primary">
-                            <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar" class="btn-icon">Cadastrar
+                        <button type="submit" class="btn btn-primary" th:text="${dados.isCadastro() ? 'Cadastrar' : 'Salvar alterações'}">
+                            <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar" class="btn-icon">
                         </button>
 
                         <a href="listagem-medicos.html" th:href="@{/web/medicos}" class="btn btn-secondary">

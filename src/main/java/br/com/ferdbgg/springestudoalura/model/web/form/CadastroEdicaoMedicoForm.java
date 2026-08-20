@@ -22,7 +22,7 @@ public record CadastroEdicaoMedicoForm(
 
         String senhaNova,
 
-        @NotBlank(message = "{obrigatorio.genero}") //
+        @NotNull(message = "{obrigatorio.genero}") //
         Genero genero,
 
         @NotBlank(message = "{obrigatorio.nome}") //

@@ -101,7 +101,7 @@ public class MedicoMapper {
     }
 
     public static String buildMedicoNome(Genero genero, String nome, String sobrenome) {
-        
+
         final var buffer = new StringBuilder();
         buffer.append("Dr");
         if (Genero.FEMININO.equals(genero)) {
@@ -113,7 +113,23 @@ public class MedicoMapper {
         buffer.append(sobrenome);
 
         return buffer.toString();
-        
+
+    }
+
+    public CadastroEdicaoMedicoForm parseCadastroEdicaoForm(Medico dados) {
+
+        return new CadastroEdicaoMedicoForm(
+                dados.getId(),
+                dados.getUsuario().getEmail(),
+                dados.getUsuario().getLogin(),
+                null,
+                null,
+                dados.getGenero(),
+                dados.getNome(),
+                dados.getSobrenome(),
+                dados.getCrm(),
+                dados.getEspecialidade());
+
     }
 
 }
