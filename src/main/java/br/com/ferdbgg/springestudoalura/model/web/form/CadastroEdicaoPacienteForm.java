@@ -2,8 +2,11 @@ package br.com.ferdbgg.springestudoalura.model.web.form;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record CadastroEdicaoPacienteForm(
@@ -28,7 +31,8 @@ public record CadastroEdicaoPacienteForm(
         @Pattern(regexp = "\\d{3}.\\d{3}.\\d{3}-\\d{2}", message = "{formato.invalido.cpf}") //
         String cpf,
 
-        @NotBlank(message = "{obrigatorio.nascimento}") //
+        @NotNull(message = "{obrigatorio.nascimento}") //
+        @DateTimeFormat(pattern = "yyyy-MM-dd") //
         LocalDate nascimento,
 
         @NotBlank(message = "{obrigatorio.telefone}") //

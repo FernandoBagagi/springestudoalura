@@ -28,15 +28,15 @@
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioLogin')}" th:errors="*{usuarioLogin}"></div>
                     </div>
 
-                    <div class="form-group" th:if="${id != null && id != 0L}">
+                    <div class="form-group" th:unless="${cadastro}">
                         <label for="senhaAntiga">Senha Antiga:</label>
-                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}" required>
+                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaAntiga')}" th:errors="*{senhaAntiga}">Erro!</div>
                     </div>
 
-                    <div class="form-group" th:if="${id != null && id != 0L}">
+                    <div class="form-group" th:unless="${cadastro}">
                         <label for="senhaNova">Senha Nova:</label>
-                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}" required>
+                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaNova')}" th:errors="*{senhaNova}">Erro!</div>
                     </div>
 
@@ -54,7 +54,7 @@
 
                     <div class="form-group">
                         <label for="nascimento">Data de Nascimento</label>
-                        <input type="datetime-local" id="nascimento" required th:field="*{nascimento}">
+                        <input type="date" id="nascimento" th:field="*{nascimento}" required>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('nascimento')}" th:errors="*{nascimento}"></div>
                     </div>
 
@@ -72,13 +72,13 @@
 
                     <div class="form-group">
                         <label for="enderecoNumero">Número:</label>
-                        <input id="enderecoNumero" name="enderecoNumero" th:field="*{enderecoNumero}" required>
+                        <input id="enderecoNumero" name="enderecoNumero" th:field="*{enderecoNumero}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoNumero')}" th:errors="*{enderecoNumero}"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="enderecoComplemento">Complemento:</label>
-                        <input id="enderecoComplemento" name="enderecoComplemento" th:field="*{enderecoComplemento}" required>
+                        <input id="enderecoComplemento" name="enderecoComplemento" th:field="*{enderecoComplemento}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('enderecoComplemento')}" th:errors="*{enderecoComplemento}"></div>
                     </div>
 
@@ -107,8 +107,8 @@
                     </div>
 
                     <div class="buttons">
-                        <button type="submit" class="btn btn-primary">
-                            <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar" class="btn-icon">Cadastrar
+                        <button type="submit" class="btn btn-primary" th:text="${dados.isCadastro() ? 'Cadastrar' : 'Salvar alterações'}">
+                            <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar" class="btn-icon">
                         </button>
 
                         <a href="listagem-pacientes.html" th:href="@{/web/pacientes}" class="btn btn-secondary">

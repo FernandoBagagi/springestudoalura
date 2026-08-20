@@ -115,4 +115,26 @@ public class PacienteMapper {
 
     }
 
+    public CadastroEdicaoPacienteForm parseCadastroEdicaoForm(Paciente dados) {
+
+        return new CadastroEdicaoPacienteForm(
+                dados.getId(),
+                dados.getUsuario().getEmail(),
+                dados.getUsuario().getLogin(),
+                null,
+                null,
+                dados.getNome(),
+                dados.getCpf(),
+                dados.getNascimento(),
+                dados.getTelefone(),
+                dados.getEndereco().getLogradouro(),
+                dados.getEndereco().getNumero(),
+                dados.getEndereco().getComplemento(),
+                dados.getEndereco().getBairro(),
+                dados.getEndereco().getCidade(),
+                dados.getEndereco().getUf(),
+                dados.getEndereco().getCep());
+
+    }
+
 }

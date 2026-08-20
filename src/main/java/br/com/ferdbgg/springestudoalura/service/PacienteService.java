@@ -44,7 +44,6 @@ public class PacienteService {
         usuario = usuarioRepository.save(usuario);
 
         var paciente = pacienteMapper.parsePaciente(dados);
-        paciente.setId(usuario.getId());
         paciente.setUsuario(usuario);
 
         paciente = pacienteRepository.save(paciente);

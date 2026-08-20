@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import br.com.ferdbgg.springestudoalura.model.entity.Paciente;
 import br.com.ferdbgg.springestudoalura.model.mapper.PacienteMapper;
 import br.com.ferdbgg.springestudoalura.model.web.form.CadastroEdicaoPacienteForm;
 import br.com.ferdbgg.springestudoalura.service.PacienteService;
@@ -50,9 +51,12 @@ public class PacienteController {
     @GetMapping("formulario")
     public String carregarPaginaCadastro(Long id, Model model) {
 
-        final var form = service
-                .pesquisarPorIdAndUsuarioAtivo(id, CadastroEdicaoPacienteForm.class)
-                .orElse(CadastroEdicaoPacienteForm.empty());
+        final var dados = service
+                .pesquisarPorIdAndUsuarioAtivo(id, Paciente.class);
+
+        final var form = dados.isPresent()
+                ? mapper.parseCadastroEdicaoForm(dados.get())
+                : CadastroEdicaoPacienteForm.empty();
 
         model.addAttribute(DADOS, form);
 
@@ -70,9 +74,9 @@ public class PacienteController {
         if (result.hasErrors()) {
 
             model.addAttribute(DADOS, form);
-            
+
             return PAGINA_CADASTRO;
-        
+
         }
 
         try {
@@ -93,7 +97,7 @@ public class PacienteController {
             return PAGINA_CADASTRO;
 
         }
-        
+
     }
 
     @DeleteMapping
