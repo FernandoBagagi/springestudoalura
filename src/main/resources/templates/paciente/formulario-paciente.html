@@ -13,7 +13,7 @@
             <section class="card form-card">
                 <h2 class="title">Cadastro de paciente</h2>
 
-                <form method="post" action="#" th:action="@{/web/pacientes}" th:object="${dados}">
+                <form method="post" action="#" th:action="@{/web/pacientes}" th:object="${form}">
                     <input type="hidden" name="id" th:field="*{id}">
 
                     <div class="form-group">
@@ -28,13 +28,13 @@
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioLogin')}" th:errors="*{usuarioLogin}"></div>
                     </div>
 
-                    <div class="form-group" th:unless="${cadastro}">
+                    <div class="form-group" th:unless="${form.isCadastro()}">
                         <label for="senhaAntiga">Senha Antiga:</label>
                         <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaAntiga')}" th:errors="*{senhaAntiga}">Erro!</div>
                     </div>
 
-                    <div class="form-group" th:unless="${cadastro}">
+                    <div class="form-group" th:unless="${form.isCadastro()}">
                         <label for="senhaNova">Senha Nova:</label>
                         <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaNova')}" th:errors="*{senhaNova}">Erro!</div>
@@ -107,7 +107,7 @@
                     </div>
 
                     <div class="buttons">
-                        <button type="submit" class="btn btn-primary" th:text="${dados.isCadastro() ? 'Cadastrar' : 'Salvar alterações'}">
+                        <button type="submit" class="btn btn-primary" th:text="${form.isCadastro() ? 'Cadastrar' : 'Salvar alterações'}">
                             <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar" class="btn-icon">
                         </button>
 
@@ -115,6 +115,7 @@
                             <img src="/static/web/assets/back.png" th:src="@{/web/assets/back.png}" alt="Voltar" class="btn-icon">Voltar
                         </a>
                     </div>
+
                 </form>
             </section>
         </main>

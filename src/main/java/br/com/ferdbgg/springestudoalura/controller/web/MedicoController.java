@@ -23,7 +23,7 @@ import br.com.ferdbgg.springestudoalura.service.MedicoService;
 @RequiredArgsConstructor
 public class MedicoController {
 
-    private static final String DADOS = "dados";
+    private static final String FORM = "form";
     private static final String PAGINA_LISTAGEM = "medico/listagem-medicos";
     private static final String PAGINA_CADASTRO = "medico/formulario-medico";
     private static final String REDIRECT_LISTAGEM = "redirect:/web/medicos?sucesso";
@@ -51,9 +51,9 @@ public class MedicoController {
             Model model //
     ) {
 
-        final var medicos = service.listarDadosBasicos(paginacao);
+        final var pagina = service.listarDadosBasicos(paginacao);
 
-        model.addAttribute("medicos", medicos);
+        model.addAttribute("pagina", pagina);
 
         return PAGINA_LISTAGEM;
 
@@ -70,7 +70,7 @@ public class MedicoController {
                 ? mapper.parseCadastroEdicaoForm(dados.get())
                 : CadastroEdicaoMedicoForm.empty();
 
-        model.addAttribute(DADOS, form);
+        model.addAttribute(FORM, form);
 
         return PAGINA_CADASTRO;
 
@@ -79,14 +79,14 @@ public class MedicoController {
     @PostMapping
     @PreAuthorize("hasAuthority('ATENDENTE')")
     public String cadastrar( //
-            @Valid @ModelAttribute(DADOS) CadastroEdicaoMedicoForm form, //
+            @Valid @ModelAttribute(FORM) CadastroEdicaoMedicoForm form, //
             BindingResult result, //
             Model model //
     ) {
 
         if (result.hasErrors()) {
 
-            model.addAttribute(DADOS, form);
+            model.addAttribute(FORM, form);
 
             return PAGINA_CADASTRO;
 
@@ -105,7 +105,7 @@ public class MedicoController {
         } catch (RuntimeException e) {
 
             model.addAttribute("erro", e.getMessage());
-            model.addAttribute(DADOS, form);
+            model.addAttribute(FORM, form);
 
             return PAGINA_CADASTRO;
 

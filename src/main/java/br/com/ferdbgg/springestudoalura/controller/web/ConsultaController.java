@@ -31,7 +31,7 @@ import br.com.ferdbgg.springestudoalura.service.PacienteService;
 @RequiredArgsConstructor
 public class ConsultaController {
 
-    private static final String DADOS = "dados";
+    private static final String FORM = "form";
     private static final String PAGINA_LISTAGEM = "consulta/listagem-consultas";
     private static final String PAGINA_CADASTRO = "consulta/formulario-consulta";
     private static final String REDIRECT_LISTAGEM = "redirect:/web/consultas?sucesso";
@@ -74,9 +74,9 @@ public class ConsultaController {
 
         final var filtro = DadosFiltroConsulta.buildFromIds(medicoId, pacienteId);
 
-        final var consultas = consultaService.listar(filtro, paginacao);
+        final var pagina = consultaService.listar(filtro, paginacao);
 
-        model.addAttribute("consultas", consultas);
+        model.addAttribute("pagina", pagina);
 
         return PAGINA_LISTAGEM;
 
@@ -93,7 +93,7 @@ public class ConsultaController {
                 ? mapper.parseCadastroEdicaoForm(dados.get())
                 : CadastroEdicaoConsultaForm.empty();
 
-        model.addAttribute(DADOS, form);
+        model.addAttribute(FORM, form);
 
         return PAGINA_CADASTRO;
     }
@@ -102,14 +102,14 @@ public class ConsultaController {
     @PreAuthorize("hasAuthority('ATENDENTE') OR " +
             "(hasAuthority('PACIENTE') AND #dados.idPaciente == authentication.principal.id)")
     public String cadastrar(
-            @Valid @ModelAttribute(DADOS) CadastroEdicaoConsultaForm form, //
+            @Valid @ModelAttribute(FORM) CadastroEdicaoConsultaForm form, //
             BindingResult result, //
             Model model //
     ) {
 
         if (result.hasErrors()) {
 
-            model.addAttribute(DADOS, form);
+            model.addAttribute(FORM, form);
 
             return PAGINA_CADASTRO;
 
@@ -128,7 +128,7 @@ public class ConsultaController {
         } catch (RuntimeException e) {
 
             model.addAttribute("erro", e.getMessage());
-            model.addAttribute(DADOS, form);
+            model.addAttribute(FORM, form);
 
             return PAGINA_CADASTRO;
 

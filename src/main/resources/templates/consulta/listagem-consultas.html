@@ -31,7 +31,7 @@
                     </thead>
 
                     <tbody>
-                        <tr th:each="consulta: ${consultas.conteudo}">
+                        <tr th:each="consulta: ${pagina.conteudo}">
                             <td th:text="${#temporals.format(consulta.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
                             <td th:text="${consulta.pacienteNome}"></td>
                             <td th:text="${consulta.medicoNome}"></td>
@@ -46,7 +46,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <div th:replace="~{componentes/_paginacao.html :: paginacao(url = 'consultas', registros = ${consultas})}"></div>
+                <div th:replace="~{componentes/_paginacao.html :: paginacao(url = 'consultas', registros = ${pagina})}"></div>
             </section>
         </main>
 

@@ -31,7 +31,7 @@
                     </thead>
 
                     <tbody>
-                        <tr th:each="medico: ${medicos.conteudo}">
+                        <tr th:each="medico: ${pagina.conteudo}">
                             <td th:text="${medico.especialidade}"></td>
                             <td th:text="${medico.nome}"></td>
                             <td th:text="${medico.crm}"></td>
@@ -51,7 +51,7 @@
                     </tbody>
                 </table>
 
-                <div th:replace="~{componentes/_paginacao.html :: paginacao(url = 'medicos', registros = ${medicos})}">
+                <div th:replace="~{componentes/_paginacao.html :: paginacao(url = 'medicos', registros = ${pagina})}">
                 </div>
             </section>
         </main>

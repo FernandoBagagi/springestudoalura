@@ -26,7 +26,7 @@ import br.com.ferdbgg.springestudoalura.service.PacienteService;
 @PreAuthorize("hasAuthority('ATENDENTE')")
 public class PacienteController {
 
-    private static final String DADOS = "dados";
+    private static final String FORM = "form";
     private static final String PAGINA_LISTAGEM = "paciente/listagem-pacientes";
     private static final String PAGINA_CADASTRO = "paciente/formulario-paciente";
     private static final String REDIRECT_LISTAGEM = "redirect:/web/pacientes?sucesso";
@@ -40,9 +40,9 @@ public class PacienteController {
             Model model //
     ) {
 
-        final var pacientes = service.listarDadosBasicos(paginacao);
+        final var pagina = service.listarDadosBasicos(paginacao);
 
-        model.addAttribute("pacientes", pacientes);
+        model.addAttribute("pagina", pagina);
 
         return PAGINA_LISTAGEM;
 
@@ -58,7 +58,7 @@ public class PacienteController {
                 ? mapper.parseCadastroEdicaoForm(dados.get())
                 : CadastroEdicaoPacienteForm.empty();
 
-        model.addAttribute(DADOS, form);
+        model.addAttribute(FORM, form);
 
         return PAGINA_CADASTRO;
 
@@ -66,14 +66,14 @@ public class PacienteController {
 
     @PostMapping
     public String cadastrar( //
-            @Valid @ModelAttribute(DADOS) CadastroEdicaoPacienteForm form, //
+            @Valid @ModelAttribute(FORM) CadastroEdicaoPacienteForm form, //
             BindingResult result, //
             Model model //
     ) {
 
         if (result.hasErrors()) {
 
-            model.addAttribute(DADOS, form);
+            model.addAttribute(FORM, form);
 
             return PAGINA_CADASTRO;
 
@@ -92,7 +92,7 @@ public class PacienteController {
         } catch (RuntimeException e) {
 
             model.addAttribute("erro", e.getMessage());
-            model.addAttribute(DADOS, form);
+            model.addAttribute(FORM, form);
 
             return PAGINA_CADASTRO;
 

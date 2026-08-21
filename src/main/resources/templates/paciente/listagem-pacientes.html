@@ -32,7 +32,7 @@
                     </thead>
 
                     <tbody>
-                        <tr th:each="paciente: ${pacientes.conteudo}">
+                        <tr th:each="paciente: ${pagina.conteudo}">
                             <td th:text="${paciente.cpf}"></td>
                             <td th:text="${paciente.nome}"></td>
                             <td th:text="${paciente.usuarioEmail}"></td>
@@ -53,7 +53,7 @@
                 </table>
 
                 <div
-                    th:replace="~{componentes/_paginacao.html :: paginacao(url = 'pacientes', registros = ${pacientes})}">
+                    th:replace="~{componentes/_paginacao.html :: paginacao(url = 'pacientes', registros = ${pagina})}">
                 </div>
             </section>
         </main>

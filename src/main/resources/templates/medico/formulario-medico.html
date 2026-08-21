@@ -13,7 +13,7 @@
             <section class="card form-card">
                 <h2 class="title">Cadastro de médico</h2>
 
-                <form method="post" action="#" th:action="@{/web/medicos}" th:object="${dados}">
+                <form method="post" action="#" th:action="@{/web/medicos}" th:object="${form}">
                     <input type="hidden" name="id" th:field="*{id}">
 
                     <div class="form-group">
@@ -28,13 +28,13 @@
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('usuarioLogin')}" th:errors="*{usuarioLogin}"></div>
                     </div>
 
-                    <div class="form-group" th:unless="${cadastro}">
+                    <div class="form-group" th:unless="${form.isCadastro()}">
                         <label for="senhaAntiga">Senha Antiga:</label>
                         <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaAntiga')}" th:errors="*{senhaAntiga}"></div>
                     </div>
 
-                    <div class="form-group" th:unless="${cadastro}">
+                    <div class="form-group" th:unless="${form.isCadastro()}">
                         <label for="senhaNova">Senha Nova:</label>
                         <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaNova')}" th:errors="*{senhaNova}"></div>
@@ -42,9 +42,9 @@
 
                     <div class="form-group">
                         <label for="genero">Gênero</label>
-                        <select id="genero" name="genero" required th:field="*{genero}">
+                        <select id="genero" name="genero" th:field="*{genero}" required>
                             <option th:value="${null}">Selecione uma especialidade</option>
-                            <option th:each="genero : ${generos}" th:value="${genero}" th:text="${genero}" th:selected="${dados.genero == genero}"></option>
+                            <option th:each="genero : ${generos}" th:value="${genero}" th:text="${genero}" th:selected="${genero == form.genero}"></option>
                         </select>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('genero')}" th:errors="*{genero}"></div>
                     </div>
@@ -71,13 +71,13 @@
                         <label for="especialidade">Especialidade</label>
                         <select id="especialidade" name="especialidade" th:field="*{especialidade}" required>
                             <option th:value="${null}">Selecione uma especialidade</option>
-                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${dados.especialidade == especialidade}"></option>
+                            <option th:each="especialidade : ${especialidades}" th:value="${especialidade}" th:text="${especialidade}" th:selected="${especialidade == form.especialidade}"></option>
                         </select>
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('especialidade')}" th:errors="*{especialidade}"></div>
                     </div>
 
                     <div class="buttons">
-                        <button type="submit" class="btn btn-primary" th:text="${dados.isCadastro() ? 'Cadastrar' : 'Salvar alterações'}">
+                        <button type="submit" class="btn btn-primary" th:text="${form.isCadastro() ? 'Cadastrar' : 'Salvar alterações'}">
                             <img src="/static/web/assets/plus.png" th:src="@{/web/assets/plus.png}" alt="Ícone de adicionar" class="btn-icon">
                         </button>
 
