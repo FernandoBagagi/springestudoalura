@@ -3,6 +3,7 @@ package br.com.ferdbgg.springestudoalura.controller.api;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,6 +20,7 @@ import br.com.ferdbgg.springestudoalura.model.api.request.DadosCadastroConsulta;
 import br.com.ferdbgg.springestudoalura.model.api.request.DadosFiltroConsulta;
 import br.com.ferdbgg.springestudoalura.model.api.response.DadosConsulta;
 import br.com.ferdbgg.springestudoalura.model.api.response.Pagina;
+import br.com.ferdbgg.springestudoalura.model.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.service.ConsultaService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -30,68 +32,85 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConsultaRestController {
 
-    private final ConsultaService service;
+        private final ConsultaService service;
 
-    @PostMapping
-    public ResponseEntity<DadosConsulta> cadastrar(
-            @RequestBody @Valid DadosCadastroConsulta dados,
-            UriComponentsBuilder uriBuilder //
-    ) {
+        @PostMapping
+        public ResponseEntity<DadosConsulta> cadastrar(
+                        @RequestBody @Valid DadosCadastroConsulta dados,
+                        UriComponentsBuilder uriBuilder //
+        ) {
 
-        final var consulta = service.cadastrar(dados);
+                final var consulta = service.cadastrar(dados);
 
-        final var uri = uriBuilder
-                .path("/api/consultas/{id}")
-                .buildAndExpand(consulta.id())
-                .toUri();
+                final var uri = uriBuilder
+                                .path("/api/consultas/{id}")
+                                .buildAndExpand(consulta.id())
+                                .toUri();
 
-        return ResponseEntity
-                .created(uri)
-                .body(consulta);
+                return ResponseEntity
+                                .created(uri)
+                                .body(consulta);
 
-    }
+        }
 
-    @GetMapping
-    public ResponseEntity<Pagina<DadosConsulta>> listar(
-            @ModelAttribute DadosFiltroConsulta filtro,
-            @PageableDefault(size = 50, sort = { "dia", "hora" }) Pageable pageable //
-    ) {
+        @GetMapping
+        public ResponseEntity<Pagina<DadosConsulta>> listar(
+                        @ModelAttribute DadosFiltroConsulta filtro,
+                        @PageableDefault(size = 50, sort = { "dia", "hora" }) Pageable pageable //
+        ) {
 
-        final var pagina = service.listar(filtro, pageable);
+                final var pagina = service.listar(filtro, pageable);
 
-        return ResponseEntity.ok(pagina);
+                return ResponseEntity.ok(pagina);
 
-    }
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DadosConsulta> pesquisarPorId(@PathVariable Long id) {
+        @GetMapping("/{id}")
+        public ResponseEntity<DadosConsulta> pesquisarPorId(
+                        @PathVariable Long id,
+                        @AuthenticationPrincipal Usuario usuarioLogado //
+        ) {
 
-        return service.pesquisarPorId(id, DadosConsulta.class)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                return service.pesquisarPorIdAndUsuarioId(
+                                id,
+                                usuarioLogado.getId(),
+                                usuarioLogado.getPerfil(),
+                                DadosConsulta.class)
+                                .map(ResponseEntity::ok)
+                                .orElse(ResponseEntity.notFound().build());
 
-    }
+        }
 
-    @PutMapping
-    public ResponseEntity<DadosConsulta> atualizar(
-            @RequestBody @Valid DadosAtualizacaoConsulta dados //
-            ) {
+        @PutMapping
+        public ResponseEntity<DadosConsulta> atualizar(
+                        @RequestBody @Valid DadosAtualizacaoConsulta dados,
+                        @AuthenticationPrincipal Usuario usuarioLogado //
+        ) {
 
-        final var consulta = service.atualizar(dados);
+                final var consulta = service.atualizar(
+                                dados,
+                                usuarioLogado.getId(),
+                                usuarioLogado.getPerfil());
 
-        return ResponseEntity.ok(consulta);
+                return ResponseEntity.ok(consulta);
 
-    }
+        }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarPorId(@PathVariable Long id) {
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Object> deletarPorId(
+                        @PathVariable Long id,
+                        @AuthenticationPrincipal Usuario usuarioLogado //
+        ) {
 
-        service.deletarPorId(id);
+                service.deletarPorId(
+                                id,
+                                usuarioLogado.getId(),
+                                usuarioLogado.getPerfil());
 
-        return ResponseEntity
-                .noContent()
-                .build();
+                return ResponseEntity
+                                .noContent()
+                                .build();
 
-    }
+        }
 
 }

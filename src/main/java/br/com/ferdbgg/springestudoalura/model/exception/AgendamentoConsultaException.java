@@ -25,6 +25,11 @@ public class AgendamentoConsultaException extends RuntimeException {
                 "A consulta deve ter uma atencedencia mínima de " + minutos + " minutos.");
     }
 
+    public static AgendamentoConsultaException antecedenciaMinimaCancelamento(int minutos) {
+        return new AgendamentoConsultaException(
+                "Para ser cancelada, a consulta deve ter uma atencedencia mínima de " + minutos + " minutos.");
+    }
+
     public static AgendamentoConsultaException dadosObrigatorios() {
         return new AgendamentoConsultaException(
                 "O médico ou a especialidade devem ser informado para fazer o agendamento.");
@@ -43,21 +48,6 @@ public class AgendamentoConsultaException extends RuntimeException {
     public static AgendamentoConsultaException medicoNaoDisponivel() {
         return new AgendamentoConsultaException(
                 "Nenhum médico dessa especialidade possui disponibilidade para consulta neste dia e hora.");
-    }
-
-    public static AgendamentoConsultaException consultaNaoEncontrada() {
-        return new AgendamentoConsultaException(
-                "Não foi encontrado nenhuma consulta neste dia e hora para o médico e/ou paciente informados.");
-    }
-
-    public static AgendamentoConsultaException pacienteNaoEncontrado() {
-        return new AgendamentoConsultaException(
-                "O paciente não foi encontrado.");
-    }
-
-    public static AgendamentoConsultaException medicoNaoEncontrado() {
-        return new AgendamentoConsultaException(
-                "O médico não foi encontrado.");
     }
 
 }

@@ -1,12 +1,15 @@
 package br.com.ferdbgg.springestudoalura.service;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +22,16 @@ import br.com.ferdbgg.springestudoalura.model.entity.Consulta;
 import br.com.ferdbgg.springestudoalura.model.entity.Medico;
 import br.com.ferdbgg.springestudoalura.model.entity.Paciente;
 import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
+import br.com.ferdbgg.springestudoalura.model.enums.PerfilUsuario;
 import br.com.ferdbgg.springestudoalura.model.exception.AgendamentoConsultaException;
 import br.com.ferdbgg.springestudoalura.model.mapper.ConsultaMapper;
 import br.com.ferdbgg.springestudoalura.model.mapper.PaginaMapper;
 import br.com.ferdbgg.springestudoalura.repository.ConsultaRepository;
 import br.com.ferdbgg.springestudoalura.repository.specification.ConsultaSpecifications;
 import br.com.ferdbgg.springestudoalura.util.DataHoraUtil;
+import static br.com.ferdbgg.springestudoalura.validator.consulta.ValidadorAntecedenciaConsulta.MINUTOS_ANTECEDENCIA;
 import br.com.ferdbgg.springestudoalura.validator.consulta.ValidadorCadastroConsulta;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,17 +39,20 @@ import lombok.RequiredArgsConstructor;
 public class ConsultaService {
 
     private final ConsultaMapper consultaMapper;
-
     private final PaginaMapper paginaMapper;
 
     private final ConsultaRepository consultaRepository;
-    
+
     private final MedicoService medicoService;
-    
     private final PacienteService pacienteService;
 
     private final List<ValidadorCadastroConsulta> validadores;
 
+    @PreAuthorize("""
+            hasAuthority('ATENDENTE')
+            OR (hasAuthority('PACIENTE') AND authentication.principal.id == #dados.pacienteId)
+            OR (hasAuthority('MEDICO') AND authentication.principal.id == #dados.medicoId)
+            """)
     @Transactional
     public DadosConsulta cadastrar(DadosCadastroConsulta dados) {
 
@@ -64,7 +73,7 @@ public class ConsultaService {
 
         final var paciente = pacienteService
                 .pesquisarPorIdAndUsuarioAtivo(dados.pacienteId(), Paciente.class)
-                .orElseThrow(AgendamentoConsultaException::pacienteNaoEncontrado);
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado."));
 
         if (jaExisteConsultaMarcadaPara(paciente, dia, hora)) {
             throw AgendamentoConsultaException.pacienteJaPossuiConsulta();
@@ -82,7 +91,6 @@ public class ConsultaService {
 
     }
 
-    // TODO: ver se tem como colocar no service
     private Medico procurarMedicoPorIdOuDisponibilidade(
             Long id,
             EspecialidadeMedico especialidade,
@@ -94,7 +102,7 @@ public class ConsultaService {
 
             return medicoService
                     .pesquisarPorIdAndUsuarioAtivo(id, Medico.class)
-                    .orElseThrow(AgendamentoConsultaException::medicoNaoEncontrado);
+                    .orElseThrow(() -> new EntityNotFoundException("Medico não encontrado."));
 
         }
 
@@ -122,6 +130,11 @@ public class ConsultaService {
 
     }
 
+    @PreAuthorize("""
+            hasAuthority('ATENDENTE')
+            OR (hasAuthority('PACIENTE') AND authentication.principal.id == #filtro.pacienteId)
+            OR (hasAuthority('MEDICO') AND authentication.principal.id == #filtro.medicoId)
+            """)
     public Pagina<DadosConsulta> listar(DadosFiltroConsulta filtro, Pageable pageable) {
 
         final var page = consultaRepository
@@ -132,25 +145,39 @@ public class ConsultaService {
 
     }
 
-    public <T> Optional<T> pesquisarPorId(Long id, Class<T> type) {
+    @PreAuthorize("hasAnyAuthority('ATENDENTE', 'PACIENTE', 'MEDICO')")
+    public <T> Optional<T> pesquisarPorIdAndUsuarioId(
+            Long id,
+            Long usuarioId,
+            PerfilUsuario usuarioPerfil,
+            Class<T> type //
+    ) {
 
-        return consultaRepository.findById(id, type);
+        return switch (usuarioPerfil) {
+            case PACIENTE -> consultaRepository.findOneByIdAndPacienteId(id, usuarioId, type);
+            case MEDICO -> consultaRepository.findOneByIdAndMedicoId(id, usuarioId, type);
+            case ATENDENTE -> consultaRepository.findOneById(id, type);
+        };
 
     }
 
+    @PreAuthorize("hasAnyAuthority('ATENDENTE', 'PACIENTE', 'MEDICO')")
     @Transactional
-    public DadosConsulta atualizar(DadosAtualizacaoConsulta dados) {
+    public DadosConsulta atualizar(
+            DadosAtualizacaoConsulta dados,
+            Long usuarioId,
+            PerfilUsuario usuarioPerfil //
+    ) {
 
-        final var consulta = consultaRepository
-                .findById(dados.id())
-                .orElseThrow(AgendamentoConsultaException::consultaNaoEncontrada);
+        final var consulta = pesquisarPorIdAndUsuarioId(dados.id(), usuarioId, usuarioPerfil, Consulta.class)
+                .orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada."));
 
         if (!Boolean.TRUE.equals(consulta.getPaciente().getUsuario().getAtivo())) {
-            throw AgendamentoConsultaException.pacienteNaoEncontrado();
+            throw new EntityNotFoundException("Paciente não encontrado.");
         }
 
         final var medico = getMedicoOuProcurarPorId(consulta.getMedico(), dados.medicoId())
-                .orElseThrow(AgendamentoConsultaException::medicoNaoEncontrado);
+                .orElseThrow(() -> new EntityNotFoundException("Medico não encontrado."));
 
         final var dia = DataHoraUtil.converterParaLocalDate(dados.dataHora());
         final var hora = DataHoraUtil.converterParaLocalTime(dados.dataHora());
@@ -185,9 +212,29 @@ public class ConsultaService {
     }
 
     @Transactional
-    public void deletarPorId(Long id) {
+    public void deletarPorId(Long id, Long usuarioId, PerfilUsuario usuarioPerfil) {
 
-        consultaRepository.deleteById(id);
+        final var consulta = pesquisarPorIdAndUsuarioId(
+                id,
+                usuarioId,
+                usuarioPerfil,
+                Consulta.class)
+                .orElseThrow(() -> new EntityNotFoundException("Consulta não encontrada."));
+
+        if (podeSerCancelada(consulta.getDataHora())) {
+            consultaRepository.deleteById(consulta.getId());
+        } else {
+            throw AgendamentoConsultaException.antecedenciaMinimaCancelamento(MINUTOS_ANTECEDENCIA);
+        }
+
+    }
+
+    private boolean podeSerCancelada(OffsetDateTime dataHora) {
+
+        return OffsetDateTime
+                .now(Clock.systemDefaultZone())
+                .plusMinutes(MINUTOS_ANTECEDENCIA)
+                .isBefore(dataHora);
 
     }
 

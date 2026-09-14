@@ -13,11 +13,17 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import br.com.ferdbgg.springestudoalura.model.entity.Consulta;
 
 public interface ConsultaRepository
-        extends JpaRepository<Consulta, Long>, JpaSpecificationExecutor<Consulta> {
+        extends JpaRepository<Consulta, Long>,
+        JpaSpecificationExecutor<Consulta> //
+{
+
+    <T> Optional<T> findOneById(Long id, Class<T> type);
+
+    <T> Optional<T> findOneByIdAndMedicoId(Long id, Long medicoId, Class<T> type);
+
+    <T> Optional<T> findOneByIdAndPacienteId(Long id, Long pacienteId, Class<T> type);
 
     Page<Consulta> findAll(Specification<Consulta> spec, Pageable pageable);
-
-    <T> Optional<T> findById(Long id, Class<T> type);
 
     boolean existsByMedicoIdAndDiaAndHora(Long medicoId, LocalDate data, LocalTime hora);
 

@@ -1,7 +1,6 @@
 package br.com.ferdbgg.springestudoalura.model.web.form;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,8 +22,8 @@ public record CadastroEdicaoConsultaForm(
         @Positive //
         Long pacienteId,
 
-        //@MinutosMultiploQuinze //
-        //@SegundosZerados //
+        @MinutosMultiploQuinze //
+        @SegundosZerados //
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") //
         LocalDateTime dataHora
 

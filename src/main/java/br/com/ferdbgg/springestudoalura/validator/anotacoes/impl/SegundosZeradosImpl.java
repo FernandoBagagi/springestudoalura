@@ -1,16 +1,16 @@
 package br.com.ferdbgg.springestudoalura.validator.anotacoes.impl;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import br.com.ferdbgg.springestudoalura.validator.anotacoes.SegundosZerados;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class SegundosZeradosImpl
-        implements ConstraintValidator<SegundosZerados, OffsetDateTime> {
+        implements ConstraintValidator<SegundosZerados, LocalDateTime> {
 
     @Override
-    public boolean isValid(OffsetDateTime dataHora, ConstraintValidatorContext context) {
+    public boolean isValid(LocalDateTime dataHora, ConstraintValidatorContext context) {
 
         return dataHora.getSecond() == 0;
 

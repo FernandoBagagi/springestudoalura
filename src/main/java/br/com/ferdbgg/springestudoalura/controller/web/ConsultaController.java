@@ -3,11 +3,11 @@ package br.com.ferdbgg.springestudoalura.controller.web;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.hibernate.query.SortDirection;
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,30 +42,42 @@ public class ConsultaController {
     private final PacienteService pacienteService;
 
     @ModelAttribute("especialidades")
-    public EspecialidadeMedico[] especialidades() {
+    public EspecialidadeMedico[] especialidades(
+            @AuthenticationPrincipal Usuario usuarioLogado //
+    ) {
 
-        return EspecialidadeMedico.values();
+        return usuarioLogado.isMedico()
+                ? new EspecialidadeMedico[0]
+                : EspecialidadeMedico.values();
 
     }
 
     @ModelAttribute("medicos")
-    public DadosBasicosMedico[] medicos() {
+    public List<DadosBasicosMedico> medicos(
+            @AuthenticationPrincipal Usuario usuarioLogado //
+    ) {
 
-        return medicoService.listarTodosDadosBasicos();
+        return usuarioLogado.isMedico()
+                ? medicoService.listarDadosBasicosPorIdAndUsuarioAtivo(usuarioLogado.getId())
+                : medicoService.listarTodosDadosBasicos();
 
     }
 
     @ModelAttribute("pacientes")
-    public DadosBasicosPaciente[] pacientes() {
+    public List<DadosBasicosPaciente> pacientes(
+            @AuthenticationPrincipal Usuario usuarioLogado //
+    ) {
 
-        return pacienteService.listarTodosDadosBasicos();
+        return usuarioLogado.isPaciente()
+                ? pacienteService.listarDadosBasicosPorIdAndUsuarioAtivo(usuarioLogado.getId())
+                : pacienteService.listarTodosDadosBasicos();
 
     }
 
     @GetMapping
     public String carregarPaginaListagem(
-            @PageableDefault(size = 5, sort = { "dia", "hora" }, direction = Direction.DESC)  Pageable paginacao, //
-            Model model, //
+            @PageableDefault(size = 5, sort = { "dia", "hora" }, direction = Direction.DESC) Pageable paginacao,
+            Model model,
             @AuthenticationPrincipal Usuario usuarioLogado //
     ) {
 
@@ -83,11 +95,18 @@ public class ConsultaController {
     }
 
     @GetMapping("formulario")
-    @PreAuthorize("hasAuthority('ATENDENTE') OR " +
-            "(hasAuthority('PACIENTE') AND (#id == null OR @consultaService.pesquisarDadosAgendamentoConsultaPorId(#id).idPaciente == authentication.principal.id))")
-    public String carregarPaginaCadastro(Long id, Model model) {
+    public String carregarPaginaCadastro(
+            Long id,
+            Model model,
+            @AuthenticationPrincipal Usuario usuarioLogado //
+    ) {
 
-        final var dados = consultaService.pesquisarPorId(id, Consulta.class);
+        final var dados = consultaService
+                .pesquisarPorIdAndUsuarioId(
+                        id,
+                        usuarioLogado.getId(),
+                        usuarioLogado.getPerfil(),
+                        Consulta.class);
 
         final CadastroEdicaoConsultaForm form = dados.isPresent()
                 ? mapper.parseCadastroEdicaoForm(dados.get())
@@ -99,12 +118,11 @@ public class ConsultaController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ATENDENTE') OR " +
-            "(hasAuthority('PACIENTE') AND #dados.idPaciente == authentication.principal.id)")
     public String cadastrar(
-            @Valid @ModelAttribute(FORM) CadastroEdicaoConsultaForm form, //
-            BindingResult result, //
-            Model model //
+            @Valid @ModelAttribute(FORM) CadastroEdicaoConsultaForm form,
+            BindingResult result,
+            Model model,
+            @AuthenticationPrincipal Usuario usuarioLogado //
     ) {
 
         if (result.hasErrors()) {
@@ -120,7 +138,10 @@ public class ConsultaController {
             if (form.isCadastro()) {
                 consultaService.cadastrar(mapper.parseDadosCadastro(form));
             } else {
-                consultaService.atualizar(mapper.parseDadosAtualizacao(form));
+                consultaService.atualizar(
+                        mapper.parseDadosAtualizacao(form),
+                        usuarioLogado.getId(),
+                        usuarioLogado.getPerfil());
             }
 
             return REDIRECT_LISTAGEM;
@@ -137,13 +158,13 @@ public class ConsultaController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasAuthority('ATENDENTE') OR " +
-            "(hasAuthority('PACIENTE') AND @consultaService.pesquisarDadosAgendamentoConsultaPorId(#id).idPaciente == authentication.principal.id) OR "
-            +
-            "(hasAuthority('MEDICO') AND @consultaService.pesquisarDadosAgendamentoConsultaPorId(#id).idMedico == authentication.principal.id)")
-    public String excluir(Long id) {
+    public String excluir(
+            Long id,
+            @AuthenticationPrincipal Usuario usuarioLogado //
+    ) {
 
-        consultaService.deletarPorId(id);
+        consultaService
+                .deletarPorId(id, usuarioLogado.getId(), usuarioLogado.getPerfil());
 
         return REDIRECT_LISTAGEM;
 

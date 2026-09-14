@@ -12,7 +12,7 @@ import br.com.ferdbgg.springestudoalura.model.exception.AgendamentoConsultaExcep
 public class ValidadorAntecedenciaConsulta
         implements ValidadorCadastroConsulta {
 
-    private static final int MINUTOS_ANTECEDENCIA = 30;
+    public static final int MINUTOS_ANTECEDENCIA = 30;
 
     @Override
     public void validar(DadosCadastroConsulta dados) {
