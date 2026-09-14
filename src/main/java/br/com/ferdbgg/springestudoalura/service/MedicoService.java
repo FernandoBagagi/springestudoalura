@@ -2,9 +2,11 @@ package br.com.ferdbgg.springestudoalura.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,67 +28,96 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MedicoService {
 
-    private final MedicoMapper mapper;
-
+    private final MedicoMapper medicoMapper;
     private final PaginaMapper paginaMapper;
 
     private final UsuarioRepository usuarioRepository;
-
     private final MedicoRepository medicoRepository;
 
     private final PasswordEncoder encriptador;
 
+    @PreAuthorize("hasAuthority('ATENDENTE')")
     @Transactional
     public DadosBasicosMedico cadastrar(DadosCadastroMedico dados) {
 
-        var usuario = mapper.parseUsuario(dados);
+        var usuario = medicoMapper.parseUsuario(dados);
 
         usuario = usuarioRepository.save(usuario);
 
-        var medico = mapper.parseMedico(dados);
+        var medico = medicoMapper.parseMedico(dados);
         medico.setId(usuario.getId());
         medico.setUsuario(usuario);
 
         medico = medicoRepository.save(medico);
 
-        return mapper.parseDadosBasicos(medico);
+        return medicoMapper.parseDadosBasicos(medico);
 
     }
 
-    public Pagina<DadosBasicosMedico> listarDadosBasicos(Pageable pageable) {
+    @PreAuthorize("hasAnyAuthority('ATENDENTE', 'MEDICO', 'PACIENTE')")
+    public Pagina<DadosBasicosMedico> paginarDadosBasicos(Pageable pageable) {
 
         final var page = medicoRepository
-                .findByUsuarioAtivo(Boolean.TRUE, DadosBasicosMedico.class, pageable);
+                .findPageByUsuarioAtivo(Boolean.TRUE, DadosBasicosMedico.class, pageable);
 
         return paginaMapper.parsePagina(page);
 
     }
 
-    public DadosBasicosMedico[] listarTodosDadosBasicos() {
+    @PreAuthorize("hasAnyAuthority('ATENDENTE', 'PACIENTE')")
+    public List<DadosBasicosMedico> listarTodosDadosBasicos() {
 
         return medicoRepository
-                .findAllProjectedBy(DadosBasicosMedico.class)
-                .toArray(new DadosBasicosMedico[0]);
+                .findAllByUsuarioAtivoTrue(DadosBasicosMedico.class);
 
     }
 
+    @PreAuthorize("hasAuthority('MEDICO') AND authentication.principal.id == #id")
+    public List<DadosBasicosMedico> listarDadosBasicosPorIdAndUsuarioAtivo(Long id) {
+
+        return medicoRepository
+                .findOneByIdAndUsuarioAtivo(id, Boolean.TRUE, DadosBasicosMedico.class)
+                .stream()
+                .toList();
+
+    }
+
+    @PreAuthorize("""
+            hasAnyAuthority('ATENDENTE', 'PACIENTE') OR
+            (hasAuthority('MEDICO') AND authentication.principal.id == #id)
+            """)
     public <T> Optional<T> pesquisarPorIdAndUsuarioAtivo(Long id, Class<T> type) {
 
         return medicoRepository
-                .findByIdAndUsuarioAtivo(id, Boolean.TRUE, type);
+                .findOneByIdAndUsuarioAtivo(id, Boolean.TRUE, type);
 
     }
 
+    @PreAuthorize("hasAnyAuthority('ATENDENTE', 'PACIENTE')")
+    public Optional<Medico> procurarMedicoDisponivel(
+            EspecialidadeMedico especialidade,
+            LocalDate dia,
+            LocalTime hora //
+    ) {
+
+        return medicoRepository
+                .findFirstMedicoDisponivel(especialidade, dia, hora);
+
+    }
+
+    @PreAuthorize("""
+            hasAuthority('ATENDENTE') OR
+            (hasAuthority('MEDICO') AND authentication.principal.id == #dados.id)
+            """)
     @Transactional
     public DadosBasicosMedico atualizar(DadosAtualizacaoMedico dados) {
 
         final var medico = medicoRepository
-                .findByIdAndUsuarioAtivo(dados.id(), Boolean.TRUE, Medico.class)
+                .findOneByIdAndUsuarioAtivo(dados.id(), Boolean.TRUE, Medico.class)
                 .orElseThrow(() -> new EntityNotFoundException("Médico não encontrado"));
 
         if (dados.email() != null && !dados.email().isBlank()) {
             medico.getUsuario().setEmail(dados.email());
-            // TODO: conferir se atualiza o usuario e se as contraints funcionam
         }
 
         if (dados.login() != null && !dados.login().isBlank()) {
@@ -124,10 +155,11 @@ public class MedicoService {
         // Não precisa de save
         // Ao final da transação, detecta e salva as alterações automaticamente
 
-        return mapper.parseDadosBasicos(medico);
+        return medicoMapper.parseDadosBasicos(medico);
 
     }
 
+    @PreAuthorize("hasAuthority('ATENDENTE')")
     @Transactional
     public void inativarPorId(Long id) {
 
@@ -137,17 +169,6 @@ public class MedicoService {
                 .getReferenceById(id)
                 .getUsuario()
                 .setAtivo(Boolean.FALSE);
-
-    }
-
-    public Optional<Medico> procurarMedicoDisponivel(
-            EspecialidadeMedico especialidade,
-            LocalDate dia,
-            LocalTime hora //
-    ) {
-
-        return medicoRepository
-                .findFirstMedicoDisponivel(especialidade, dia, hora);
 
     }
 

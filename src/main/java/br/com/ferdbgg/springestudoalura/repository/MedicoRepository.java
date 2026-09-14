@@ -15,11 +15,11 @@ import br.com.ferdbgg.springestudoalura.model.enums.EspecialidadeMedico;
 
 public interface MedicoRepository extends JpaRepository<Medico, Long> {
 
-    <T> Page<T> findByUsuarioAtivo(Boolean ativo, Class<T> type, Pageable pageable);
+    <T> Optional<T> findOneByIdAndUsuarioAtivo(Long id, Boolean ativo, Class<T> type);
     
-    <T> Optional<T> findByIdAndUsuarioAtivo(Long id, Boolean ativo, Class<T> type);
+    <T> Page<T> findPageByUsuarioAtivo(Boolean ativo, Class<T> type, Pageable pageable);
 
-    <T> List<T> findAllProjectedBy(Class<T> type); // Testar Example<S>
+    <T> List<T> findAllByUsuarioAtivoTrue(Class<T> type);
 
     @Query("""
             SELECT m

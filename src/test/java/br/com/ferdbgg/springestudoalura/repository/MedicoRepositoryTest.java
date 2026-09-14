@@ -53,7 +53,7 @@ class MedicoRepositoryTest {
             assertThat(medicoDisponivel).isPresent();
 
             final var paciente = pacienteRepository
-                    .findByIdAndUsuarioAtivo(i, Boolean.TRUE, Paciente.class)
+                    .findOneByIdAndUsuarioAtivo(i, Boolean.TRUE, Paciente.class)
                     .get();
 
             final var consulta = new Consulta();

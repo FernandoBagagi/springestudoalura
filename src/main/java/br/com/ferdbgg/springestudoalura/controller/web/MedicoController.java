@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,12 +45,12 @@ public class MedicoController {
     }
 
     @GetMapping
-    public String carregarPaginaListagem( //
-            @PageableDefault Pageable paginacao, //
+    public String carregarPaginaListagem(
+            @PageableDefault Pageable paginacao,
             Model model //
     ) {
 
-        final var pagina = service.listarDadosBasicos(paginacao);
+        final var pagina = service.paginarDadosBasicos(paginacao);
 
         model.addAttribute("pagina", pagina);
 
@@ -60,8 +59,10 @@ public class MedicoController {
     }
 
     @GetMapping("formulario")
-    @PreAuthorize("hasAuthority('ATENDENTE') OR hasAuthority('MEDICO')")
-    public String carregarPaginaCadastro(Long id, Model model) {
+    public String carregarPaginaCadastro(
+            Long id,
+            Model model //
+    ) {
 
         final var dados = service
                 .pesquisarPorIdAndUsuarioAtivo(id, Medico.class);
@@ -77,10 +78,9 @@ public class MedicoController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ATENDENTE')")
-    public String cadastrar( //
-            @Valid @ModelAttribute(FORM) CadastroEdicaoMedicoForm form, //
-            BindingResult result, //
+    public String cadastrar(
+            @Valid @ModelAttribute(FORM) CadastroEdicaoMedicoForm form,
+            BindingResult result,
             Model model //
     ) {
 
@@ -114,7 +114,6 @@ public class MedicoController {
     }
 
     @DeleteMapping
-    @PreAuthorize("hasAuthority('ATENDENTE')")
     public String excluir(Long id) {
 
         service.inativarPorId(id);

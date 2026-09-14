@@ -55,7 +55,7 @@ public class MedicoRestController {
             @PageableDefault(size = 50, sort = { "especialidade", "nome", "id" }) Pageable pageable //
     ) {
 
-        final var pagina = service.listarDadosBasicos(pageable);
+        final var pagina = service.paginarDadosBasicos(pageable);
 
         return ResponseEntity.ok(pagina);
 
