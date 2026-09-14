@@ -28,7 +28,7 @@ public record CadastroEdicaoPacienteForm(
         String nome,
 
         @NotBlank(message = "{obrigatorio.cpf}") //
-        @Pattern(regexp = "\\d{3}.\\d{3}.\\d{3}-\\d{2}", message = "{formato.invalido.cpf}") //
+        @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}", message = "{formato.invalido.cpf}") //
         String cpf,
 
         @NotNull(message = "{obrigatorio.nascimento}") //
@@ -46,7 +46,7 @@ public record CadastroEdicaoPacienteForm(
 
         String enderecoComplemento,
 
-        @NotBlank(message = "{obrigatorio.bairro") //
+        @NotBlank(message = "{obrigatorio.bairro}") //
         String enderecoBairro,
 
         @NotBlank(message = "{obrigatorio.cidade}") //
