@@ -30,13 +30,13 @@
 
                     <div class="form-group" th:unless="${form.isCadastro()}">
                         <label for="senhaAntiga">Senha Antiga:</label>
-                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}">
+                        <input id="senhaAntiga" name="senhaAntiga" th:field="*{senhaAntiga}" type="password">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaAntiga')}" th:errors="*{senhaAntiga}">Erro!</div>
                     </div>
 
                     <div class="form-group" th:unless="${form.isCadastro()}">
                         <label for="senhaNova">Senha Nova:</label>
-                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}">
+                        <input id="senhaNova" name="senhaNova" th:field="*{senhaNova}" type="password">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('senhaNova')}" th:errors="*{senhaNova}">Erro!</div>
                     </div>
 
