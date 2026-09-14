@@ -1,8 +1,11 @@
 package br.com.ferdbgg.springestudoalura.service;
 
+import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +28,15 @@ import lombok.RequiredArgsConstructor;
 public class PacienteService {
 
     private final PacienteMapper pacienteMapper;
-
     private final EnderecoMapper enderecoMapper;
-
     private final PaginaMapper paginaMapper;
 
     private final UsuarioRepository usuarioRepository;
-
     private final PacienteRepository pacienteRepository;
 
     private final PasswordEncoder encriptador;
 
+    @PreAuthorize("hasAuthority('ATENDENTE')")
     @Transactional
     public DadosBasicosPaciente cadastrar(DadosCadastroPaciente dados) {
 
@@ -52,35 +53,68 @@ public class PacienteService {
 
     }
 
-    public Pagina<DadosBasicosPaciente> listarDadosBasicos(Pageable pageable) {
+    @PreAuthorize("hasAuthority('PACIENTE') AND authentication.principal.id == #id")
+    public Pagina<DadosBasicosPaciente> paginarDadosBasicosFromPacienteId(Long id, Pageable pageable) {
 
-        final var page = pacienteRepository
-                .findByUsuarioAtivo(Boolean.TRUE, DadosBasicosPaciente.class, pageable);
+        final var dadosBasicos = pacienteRepository
+                .findOneByIdAndUsuarioAtivo(id, Boolean.TRUE, DadosBasicosPaciente.class)
+                .stream()
+                .toList();
+
+        final var page = new PageImpl<>(dadosBasicos, pageable, dadosBasicos.size());
 
         return paginaMapper.parsePagina(page);
 
     }
 
-    public DadosBasicosPaciente[] listarTodosDadosBasicos() {
+    @PreAuthorize("hasAnyAuthority('ATENDENTE', 'MEDICO')")
+    public Pagina<DadosBasicosPaciente> paginarDadosBasicos(Pageable pageable) {
 
-        return pacienteRepository
-                .findByUsuarioAtivoTrue(DadosBasicosPaciente.class)
-                .toArray(new DadosBasicosPaciente[0]);
-                
+        final var page = pacienteRepository
+                .findPageByUsuarioAtivo(Boolean.TRUE, DadosBasicosPaciente.class, pageable);
+
+        return paginaMapper.parsePagina(page);
+
     }
 
+    @PreAuthorize("hasAnyAuthority('ATENDENTE', 'MEDICO')")
+    public List<DadosBasicosPaciente> listarTodosDadosBasicos() {
+
+        return pacienteRepository
+                .findAllByUsuarioAtivoTrue(DadosBasicosPaciente.class);
+
+    }
+
+    @PreAuthorize("hasAuthority('PACIENTE') AND authentication.principal.id == #id")
+    public List<DadosBasicosPaciente> listarDadosBasicosPorIdAndUsuarioAtivo(Long id) {
+
+        return pacienteRepository
+                .findOneByIdAndUsuarioAtivo(id, Boolean.TRUE, DadosBasicosPaciente.class)
+                .stream()
+                .toList();
+
+    }
+
+    @PreAuthorize("""
+            hasAuthority('ATENDENTE')
+            OR (hasAuthority('PACIENTE') AND authentication.principal.id == #id)
+            """)
     public <T> Optional<T> pesquisarPorIdAndUsuarioAtivo(Long id, Class<T> type) {
 
         return pacienteRepository
-                .findByIdAndUsuarioAtivo(id, Boolean.TRUE, type);
+                .findOneByIdAndUsuarioAtivo(id, Boolean.TRUE, type);
 
     }
 
+    @PreAuthorize("""
+            hasAuthority('ATENDENTE')
+            OR (hasAuthority('PACIENTE') AND authentication.principal.id == #dados.id)
+            """)
     @Transactional
     public DadosBasicosPaciente atualizar(DadosAtualizacaoPaciente dados) {
 
         final var paciente = pacienteRepository
-                .findByIdAndUsuarioAtivo(dados.id(), Boolean.TRUE, Paciente.class)
+                .findOneByIdAndUsuarioAtivo(dados.id(), Boolean.TRUE, Paciente.class)
                 .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado"));
 
         if (dados.email() != null && !dados.email().isBlank()) {
@@ -127,6 +161,7 @@ public class PacienteService {
 
     }
 
+    @PreAuthorize("hasAuthority('ATENDENTE')")
     @Transactional
     public void inativarPorId(Long id) {
 

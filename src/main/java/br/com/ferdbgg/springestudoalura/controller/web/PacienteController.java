@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.com.ferdbgg.springestudoalura.model.entity.Paciente;
+import br.com.ferdbgg.springestudoalura.model.entity.Usuario;
 import br.com.ferdbgg.springestudoalura.model.mapper.PacienteMapper;
 import br.com.ferdbgg.springestudoalura.model.web.form.CadastroEdicaoPacienteForm;
 import br.com.ferdbgg.springestudoalura.service.PacienteService;
@@ -23,7 +24,6 @@ import br.com.ferdbgg.springestudoalura.service.PacienteService;
 @Controller
 @RequestMapping("/web/pacientes")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ATENDENTE')")
 public class PacienteController {
 
     private static final String FORM = "form";
@@ -35,12 +35,15 @@ public class PacienteController {
     private final PacienteService service;
 
     @GetMapping
-    public String carregarPaginaListagem( //
-            @PageableDefault Pageable paginacao, //
-            Model model //
+    public String carregarPaginaListagem(
+            @PageableDefault Pageable paginacao,
+            Model model,
+            @AuthenticationPrincipal Usuario usuarioLogado //
     ) {
 
-        final var pagina = service.listarDadosBasicos(paginacao);
+        final var pagina = usuarioLogado.isPaciente()
+                ? service.paginarDadosBasicosFromPacienteId(usuarioLogado.getId(), paginacao)
+                : service.paginarDadosBasicos(paginacao);
 
         model.addAttribute("pagina", pagina);
 
@@ -49,7 +52,10 @@ public class PacienteController {
     }
 
     @GetMapping("formulario")
-    public String carregarPaginaCadastro(Long id, Model model) {
+    public String carregarPaginaCadastro(
+            Long id,
+            Model model //
+    ) {
 
         final var dados = service
                 .pesquisarPorIdAndUsuarioAtivo(id, Paciente.class);
@@ -65,9 +71,9 @@ public class PacienteController {
     }
 
     @PostMapping
-    public String cadastrar( //
-            @Valid @ModelAttribute(FORM) CadastroEdicaoPacienteForm form, //
-            BindingResult result, //
+    public String cadastrar(
+            @Valid @ModelAttribute(FORM) CadastroEdicaoPacienteForm form,
+            BindingResult result,
             Model model //
     ) {
 

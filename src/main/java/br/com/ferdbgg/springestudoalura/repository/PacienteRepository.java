@@ -11,10 +11,10 @@ import br.com.ferdbgg.springestudoalura.model.entity.Paciente;
 
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
-    <T> Page<T> findByUsuarioAtivo(Boolean ativo, Class<T> type, Pageable pageable);
+    <T> Optional<T> findOneByIdAndUsuarioAtivo(Long id, Boolean ativo, Class<T> type);
+    
+    <T> Page<T> findPageByUsuarioAtivo(Boolean ativo, Class<T> type, Pageable pageable);
 
-    <T> Optional<T> findByIdAndUsuarioAtivo(Long id, Boolean ativo, Class<T> type);
-
-    <T> List<T> findByUsuarioAtivoTrue(Class<T> type);
+    <T> List<T> findAllByUsuarioAtivoTrue(Class<T> type);
 
 }

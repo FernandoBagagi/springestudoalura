@@ -55,7 +55,7 @@ public class PacienteRestController {
             @PageableDefault(size = 50, sort = { "nome", "id" }) Pageable pageable //
     ) {
 
-        final var pagina = service.listarDadosBasicos(pageable);
+        final var pagina = service.paginarDadosBasicos(pageable);
 
         return ResponseEntity.ok(pagina);
 
